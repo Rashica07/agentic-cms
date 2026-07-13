@@ -29,6 +29,7 @@ import {
   Eye,
   Newspaper,
   Folder,
+  Sparkles,
 } from 'lucide-react';
 import { useState, useEffect, Suspense } from 'react';
 import { useUIStore } from '@/store/useStore';
@@ -65,6 +66,7 @@ function buildNav(isSuperAdmin: boolean): NavGroup[] {
     label: '',
     items: [
       { name: 'Home', href: '/dashboard', icon: Home },
+      { name: 'AI Agent', href: '/dashboard/agent', icon: Sparkles },
     ],
   });
 
