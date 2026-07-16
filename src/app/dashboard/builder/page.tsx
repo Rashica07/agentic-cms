@@ -1,580 +1,305 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
 import { createPulseClient } from '@/lib/novus-pulse-client';
+import { PlanGate } from '@/components/plan-gate';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { defaultPortfolioContent } from '@/lib/default-content';
-import { useUIStore } from '@/store/useStore';
-import {
-  ChevronRight,
-  Plus,
-  Trash2,
-  RotateCcw,
-  CheckCircle2,
-  Loader2,
-  AlertCircle,
-  Sparkles,
-} from 'lucide-react';
+import { Paintbrush, Save, LayoutTemplate, Settings2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
-// ─────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────
+import { useSiteInfo } from '@/hooks/useSiteInfo';
 
-type Path = (string | number)[];
+const DEFAULT_THEME = {
+  colors: {
+    primary: '#ff8c00',
+    background: '#0a0a0a',
+    surface: '#121212',
+    accent: '#ff6b00',
+  },
+  fonts: {
+    body: 'Inter',
+    heading: 'Outfit',
+  },
+  borderRadius: '12px',
+};
 
-/** Immutable deep-set at a path. */
-function setAtPath(obj: any, path: Path, value: any): any {
-  if (path.length === 0) return value;
-  const [head, ...rest] = path;
-  if (Array.isArray(obj)) {
-    const copy = [...obj];
-    copy[head as number] = setAtPath(copy[head as number], rest, value);
-    return copy;
-  }
-  return { ...obj, [head]: setAtPath(obj?.[head], rest, value) };
-}
+const FONT_OPTIONS = ['Inter', 'Outfit', 'Roboto', 'Playfair Display', 'Space Grotesk'];
 
-/** Get value at a path. */
-function getAtPath(obj: any, path: Path): any {
-  return path.reduce((acc, key) => acc?.[key], obj);
-}
-
-/** Deep-merge `saved` over `defaults` so new default sections always appear. */
-function mergeWithDefaults(defaults: any, saved: any): any {
-  if (saved === undefined || saved === null) return defaults;
-  if (Array.isArray(saved)) return saved;
-  if (typeof saved === 'object' && typeof defaults === 'object' && !Array.isArray(defaults)) {
-    const out: any = { ...defaults };
-    for (const key of Object.keys(saved)) {
-      out[key] = mergeWithDefaults(defaults?.[key], saved[key]);
-    }
-    return out;
-  }
-  return saved;
-}
-
-/** "h1Line1" → "H1 Line 1", "ctaTitle" → "Cta Title" */
-function labelize(key: string): string {
-  return key
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/([a-zA-Z])(\d)/g, '$1 $2')
-    .replace(/^./, (c) => c.toUpperCase());
-}
-
-/** Empty clone of an item so "Add" produces the right shape. */
-function emptyClone(sample: any): any {
-  if (typeof sample === 'string') return '';
-  if (typeof sample === 'number') return 0;
-  if (Array.isArray(sample)) return [];
-  if (sample && typeof sample === 'object') {
-    const out: any = {};
-    for (const k of Object.keys(sample)) out[k] = emptyClone(sample[k]);
-    return out;
-  }
-  return '';
-}
-
-function isLongText(key: string, value: string): boolean {
-  return (
-    value.length > 70 ||
-    value.includes('\n') ||
-    ['sub', 'desc', 'bio', 'quote', 'excerpt', 'greeting', 'tagline', 'description'].some(
-      (k) => key.toLowerCase().includes(k),
-    )
-  );
-}
-
-/** Human title for an array item card. */
-function itemTitle(item: any, index: number): string {
-  if (typeof item === 'string') return item || `Item ${index + 1}`;
-  const t = item?.name || item?.title || item?.role || item?.year || item?.n || item?.value;
-  return typeof t === 'string' && t.length > 0 ? t : `Item ${index + 1}`;
-}
-
-// Friendly section names + display order. Unknown keys are appended automatically.
-const SECTION_META: [string, string][] = [
-  ['hero', 'Hero'],
-  ['nav', 'Navigation'],
-  ['services', 'Services & Pricing'],
-  ['work', 'Portfolio / Work'],
-  ['stats', 'Stats'],
-  ['process', 'Process'],
-  ['testimonials', 'Testimonials'],
-  ['funnel', 'Project Funnel'],
-  ['about', 'About'],
-  ['blog', 'Blog / Writing'],
-  ['contact', 'Contact'],
-  ['footer', 'Footer'],
-  ['whatsapp', 'WhatsApp Widget'],
-  ['page', 'Page Labels'],
-  ['portfolio', 'Portfolio Page'],
-  ['notFound', '404 Page'],
+const THEME_LIBRARY = [
+  {
+    id: 'dawn',
+    name: 'Dawn',
+    author: 'Novus Pulse',
+    description: 'A chic and minimalist theme that lets product images take center stage.',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1200&h=600',
+    colors: { primary: '#000000', background: '#ffffff', surface: '#f4f4f4', accent: '#ff8c00' },
+  },
+  {
+    id: 'refresh',
+    name: 'Refresh',
+    author: 'Novus Pulse',
+    description: 'Bold theme that elevates product quality and brand storytelling.',
+    image: 'https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&q=80&w=1200&h=600',
+    colors: { primary: '#ffffff', background: '#0f172a', surface: '#1e293b', accent: '#3b82f6' },
+  },
 ];
 
-// ─────────────────────────────────────────────────────────────
-// Recursive field renderer
-// ─────────────────────────────────────────────────────────────
-
-function FieldEditor({
-  value,
-  path,
-  fieldKey,
-  onChange,
-  depth = 0,
-}: {
-  value: any;
-  path: Path;
-  fieldKey: string;
-  onChange: (path: Path, value: any) => void;
-  depth?: number;
-}) {
-  // ── Strings ──
-  if (typeof value === 'string') {
-    if (isLongText(fieldKey, value)) {
-      return (
-        <div className="space-y-1.5">
-          <Label className="text-[11px] text-neutral-400">{labelize(fieldKey)}</Label>
-          <textarea
-            value={value}
-            onChange={(e) => onChange(path, e.target.value)}
-            rows={Math.min(6, Math.max(2, Math.ceil(value.length / 60)))}
-            className="flex w-full rounded-md border border-border bg-neutral-950/50 px-3 py-2 text-sm placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand resize-y"
-          />
-        </div>
-      );
-    }
-    return (
-      <div className="space-y-1.5">
-        <Label className="text-[11px] text-neutral-400">{labelize(fieldKey)}</Label>
-        <Input
-          value={value}
-          onChange={(e) => onChange(path, e.target.value)}
-          className="bg-neutral-950/50"
-        />
-      </div>
-    );
-  }
-
-  // ── Numbers ──
-  if (typeof value === 'number') {
-    return (
-      <div className="space-y-1.5">
-        <Label className="text-[11px] text-neutral-400">{labelize(fieldKey)}</Label>
-        <Input
-          type="number"
-          value={value}
-          onChange={(e) => onChange(path, Number(e.target.value) || 0)}
-          className="bg-neutral-950/50"
-        />
-      </div>
-    );
-  }
-
-  // ── Booleans ──
-  if (typeof value === 'boolean') {
-    return (
-      <label className="flex items-center gap-2 text-sm text-neutral-300 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(e) => onChange(path, e.target.checked)}
-          className="accent-[var(--brand,#ff8c00)]"
-        />
-        {labelize(fieldKey)}
-      </label>
-    );
-  }
-
-  // ── Arrays ──
-  if (Array.isArray(value)) {
-    const isStringArray = value.every((v) => typeof v === 'string');
-    return (
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-[11px] uppercase tracking-wider text-neutral-500">
-            {labelize(fieldKey)}{' '}
-            <span className="text-neutral-600">({value.length})</span>
-          </Label>
-          <button
-            type="button"
-            onClick={() =>
-              onChange(path, [...value, value.length > 0 ? emptyClone(value[value.length - 1]) : ''])
-            }
-            className="flex items-center gap-1 text-[11px] text-brand hover:text-brand/80 transition-colors"
-          >
-            <Plus className="h-3 w-3" /> Add
-          </button>
-        </div>
-
-        {isStringArray ? (
-          <div className="space-y-1.5">
-            {value.map((item, i) => (
-              <div key={i} className="flex items-center gap-1.5">
-                <Input
-                  value={item}
-                  onChange={(e) => onChange([...path, i], e.target.value)}
-                  className="bg-neutral-950/50 text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => onChange(path, value.filter((_, j) => j !== i))}
-                  className="p-1.5 text-neutral-600 hover:text-red-400 transition-colors flex-shrink-0"
-                  title="Remove"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {value.map((item, i) => (
-              <ArrayItemCard
-                key={i}
-                title={itemTitle(item, i)}
-                onRemove={() => onChange(path, value.filter((_, j) => j !== i))}
-              >
-                <FieldEditor
-                  value={item}
-                  path={[...path, i]}
-                  fieldKey={itemTitle(item, i)}
-                  onChange={onChange}
-                  depth={depth + 1}
-                />
-              </ArrayItemCard>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // ── Objects ──
-  if (value && typeof value === 'object') {
-    const entries = Object.entries(value);
-    return (
-      <div className={depth > 0 ? 'space-y-3' : 'space-y-4'}>
-        {depth > 0 && depth < 2 && fieldKey && (
-          <p className="text-[10px] uppercase tracking-widest text-neutral-500 border-b border-border/40 pb-1">
-            {labelize(fieldKey)}
-          </p>
-        )}
-        {entries.map(([k, v]) => {
-          // Nested plain objects get their own labelled group
-          const isGroup = v && typeof v === 'object' && !Array.isArray(v);
-          return (
-            <div key={k} className={isGroup ? 'rounded-lg border border-border/40 bg-neutral-950/30 p-3' : ''}>
-              <FieldEditor
-                value={v}
-                path={[...path, k]}
-                fieldKey={k}
-                onChange={onChange}
-                depth={depth + 1}
-              />
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  return null;
-}
-
-/** Collapsible card for one item in an array of objects. */
-function ArrayItemCard({
-  title,
-  onRemove,
-  children,
-}: {
-  title: string;
-  onRemove: () => void;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="rounded-lg border border-border/50 bg-neutral-950/40 overflow-hidden">
-      <div className="flex items-center justify-between px-3 py-2">
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 text-left text-sm text-neutral-200 hover:text-white transition-colors flex-1 min-w-0"
-        >
-          <ChevronRight
-            className={`h-3.5 w-3.5 text-neutral-500 transition-transform flex-shrink-0 ${open ? 'rotate-90' : ''}`}
-          />
-          <span className="truncate">{title}</span>
-        </button>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="p-1 text-neutral-600 hover:text-red-400 transition-colors flex-shrink-0"
-          title="Remove item"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
-      </div>
-      {open && <div className="px-3 pb-3 pt-1 border-t border-border/40">{children}</div>}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// Page
-// ─────────────────────────────────────────────────────────────
-
-type SaveState = 'idle' | 'saving' | 'saved' | 'error';
-
-export default function VisualBuilderPage() {
+export default function ThemesPage() {
   const { data: session } = useSession();
-  const { activeTenantId } = useUIStore();
-  const [pageId, setPageId] = useState<string | null>(null);
-  const pulseRef = useRef<any>(null);
+  const { siteUrl } = useSiteInfo();
+  const [theme, setTheme] = useState(DEFAULT_THEME);
+  const [saving, setSaving] = useState(false);
+  const [activeTheme, setActiveTheme] = useState(THEME_LIBRARY[0]);
 
-  const { data: tenant } = useQuery({
-    queryKey: ['tenant-details', session?.user?.tenantId],
-    queryFn: async () => {
-      if (!session?.accessToken || !session?.user?.tenantId) return null;
-      const pulse = createPulseClient(session.accessToken);
-      return pulse.getTenant(session.user.tenantId);
-    },
-    enabled: !!session?.accessToken && !!session?.user?.tenantId,
-  });
-
-  const [content, setContent] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [openSection, setOpenSection] = useState<string>('hero');
-  const [saveState, setSaveState] = useState<SaveState>('idle');
-
-  // Initialize SDK and load the home page
   useEffect(() => {
     if (!session?.accessToken) return;
-
-    setIsLoading(true);
-    const pulse = createPulseClient(session.accessToken);
-    pulseRef.current = pulse;
-
-    const initPage = async () => {
+    let cancelled = false;
+    (async () => {
       try {
-        const pages = await pulse.getPages();
-        let homePage = pages.find((p: any) => p.slug === 'home');
-
-        if (!homePage) {
-          homePage = await pulse.createPage({
-            title: 'Portfolio Home',
-            slug: 'home',
-            content: defaultPortfolioContent,
-            published: true,
-          });
-          setContent(defaultPortfolioContent);
-        } else {
-          // Merge saved content over defaults so newly added sections show up
-          setContent(mergeWithDefaults(defaultPortfolioContent, homePage.content ?? {}));
-        }
-        setPageId(homePage.id);
-      } catch (err) {
-        console.error('Failed to init builder page', err);
-        // A 401 here means the session is stale — createPulseClient's
-        // onAuthError already triggers a re-login, so don't show a
-        // misleading "backend down" toast on top of that redirect.
-        const isAuthError =
-          err instanceof Error && 'statusCode' in err && (err as { statusCode: number }).statusCode === 401;
-        if (!isAuthError) {
-          toast.error('Could not load page content', {
-            description: err instanceof Error ? err.message : 'Is the Novus Pulse backend running on port 3000?',
+        const pulse = createPulseClient(session.accessToken);
+        const tenant = await pulse.getMyTenant();
+        const saved = (tenant as { theme?: typeof DEFAULT_THEME }).theme;
+        if (!cancelled && saved) {
+          setTheme({
+            colors: { ...DEFAULT_THEME.colors, ...(saved.colors ?? {}) },
+            fonts: { ...DEFAULT_THEME.fonts, ...(saved.fonts ?? {}) },
+            borderRadius: saved.borderRadius ?? DEFAULT_THEME.borderRadius,
           });
         }
-      } finally {
-        setIsLoading(false);
+      } catch {
+        // Fallback to default
       }
+    })();
+    return () => {
+      cancelled = true;
     };
+  }, [session?.accessToken]);
 
-    initPage();
-  }, [session?.accessToken, activeTenantId]);
-
-  // Debounced save of the full content object
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isSavingRef = useRef(false);
-  const pendingContentRef = useRef<any>(null);
-
-  const persist = useCallback((newContent: any) => {
-    pendingContentRef.current = newContent;
-
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    setSaveState('saving');
-    
-    debounceTimer.current = setTimeout(async () => {
-      if (!pageId || !pulseRef.current) return;
-      
-      if (isSavingRef.current) {
-        // Wait until the current request finishes before firing again
-        persist(pendingContentRef.current);
-        return;
-      }
-
-      isSavingRef.current = true;
-      try {
-        await pulseRef.current.updatePage(pageId, { content: pendingContentRef.current });
-        setSaveState('saved');
-      } catch (err: unknown) {
-        console.error(err);
-        setSaveState('error');
-        toast.error('Failed to save changes');
-      } finally {
-        isSavingRef.current = false;
-      }
-    }, 750);
-  }, [pageId]);
-
-  const handleChange = useCallback(
-    (path: Path, value: any) => {
-      setContent((prev: any) => {
-        const next = setAtPath(prev, path, value);
-        persist(next);
-        return next;
-      });
-    },
-    [persist],
-  );
-
-  const resetSection = (key: string) => {
-    const defaults = (defaultPortfolioContent as any)[key];
-    if (defaults === undefined) return;
-    handleChange([key], JSON.parse(JSON.stringify(defaults)));
-    toast.success(`"${labelize(key)}" restored to defaults`);
+  const broadcastTheme = (nextTheme: typeof theme) => {
+    const iframe = document.getElementById('site-preview-iframe') as HTMLIFrameElement | null;
+    iframe?.contentWindow?.postMessage({ type: 'NOVUS_THEME_UPDATE', theme: nextTheme }, '*');
   };
 
-  if (isLoading || !content) {
-    return (
-      <div className="flex h-[calc(100vh-8rem)] items-center justify-center text-neutral-400 gap-2">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading Visual Editor…
-      </div>
-    );
-  }
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const pulse = createPulseClient(session?.accessToken);
+      await pulse.updateMyTheme(theme);
+      broadcastTheme(theme);
+      toast.success('Theme settings saved to live site!');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save theme settings');
+    } finally {
+      setSaving(false);
+    }
+  };
 
-  // Known sections first (in order), then anything else found in content
-  const knownKeys = SECTION_META.map(([k]) => k);
-  const sections: [string, string][] = [
-    ...SECTION_META.filter(([k]) => content[k] !== undefined),
-    ...Object.keys(content)
-      .filter((k) => !knownKeys.includes(k))
-      .map((k): [string, string] => [k, labelize(k)]),
-  ];
+  const applyLibraryTheme = (libTheme: typeof THEME_LIBRARY[0]) => {
+    setActiveTheme(libTheme);
+    const nextTheme = { ...theme, colors: libTheme.colors };
+    setTheme(nextTheme);
+    broadcastTheme(nextTheme);
+    toast.success(`Applied ${libTheme.name} color palette. Click save to publish.`);
+  };
+
+  const updateThemeColor = (key: keyof typeof theme.colors, value: string) => {
+    const nextTheme = { ...theme, colors: { ...theme.colors, [key]: value } };
+    setTheme(nextTheme);
+    broadcastTheme(nextTheme);
+  };
 
   return (
-    <div className="flex h-[calc(100vh-2rem)] flex-col lg:flex-row gap-0 overflow-hidden rounded-xl border border-border/50 shadow-2xl bg-neutral-950">
-      {/* LEFT PANEL: All sections, fully editable */}
-      <div className="w-full lg:w-[460px] flex-shrink-0 flex flex-col h-full overflow-y-auto border-r border-border/50 bg-neutral-900/50 relative custom-scrollbar">
-        <div className="sticky top-0 z-10 bg-neutral-950/90 backdrop-blur-md border-b border-border/50 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-brand" /> Visual Editor
-              </h1>
-              <p className="text-[11px] text-neutral-400 mt-0.5">
-                Every section of your site — synced live.
-              </p>
+    <PlanGate feature="themes">
+      <div className="max-w-6xl mx-auto space-y-12 pb-24">
+        
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+            <LayoutTemplate className="h-7 w-7 text-brand" /> Themes & Customization
+          </h1>
+          <p className="text-neutral-400 mt-2">
+            Manage your store's look and feel, customize themes, and tweak your brand settings.
+          </p>
+        </div>
+
+        {/* Top Section: Active Theme Banner (Shopify Style) */}
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 overflow-hidden flex flex-col shadow-2xl">
+          {/* Live Site Preview with Overlay */}
+          <div className="relative h-[400px] w-full group overflow-hidden bg-white">
+            <div className="absolute inset-0 origin-top-left pointer-events-none" style={{ width: '250%', height: '250%', transform: 'scale(0.4)' }}>
+              <iframe
+                id="site-preview-iframe"
+                src={siteUrl}
+                title="Live site preview"
+                className="w-full h-full border-none transition-transform duration-700 group-hover:scale-105"
+              />
             </div>
-            <SaveIndicator state={saveState} />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute bottom-8 left-8 flex items-center gap-4">
+              <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
+                <Paintbrush className="h-8 w-8 text-white drop-shadow-md" />
+              </div>
+              <div>
+                <span className="text-sm font-bold uppercase tracking-widest text-brand drop-shadow-sm">Current Theme</span>
+                <h2 className="text-4xl font-extrabold text-white drop-shadow-lg tracking-tight mt-1">{activeTheme.name}</h2>
+              </div>
+            </div>
+            {/* Live Indicator */}
+            <div className="absolute top-6 right-6">
+              <span className="inline-flex items-center gap-2 rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-400 border border-green-500/30 shadow-lg backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                Published
+              </span>
+            </div>
+          </div>
+
+          {/* Info and Edit Button */}
+          <div className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-neutral-950">
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-white">Customize your store</h3>
+              <p className="text-neutral-400 mt-2 text-sm leading-relaxed max-w-2xl">
+                Use the visual builder to modify your layout, sections, and add new blocks. 
+                Your changes are saved as drafts until you explicitly publish them.
+              </p>
+              <div className="flex items-center gap-4 mt-4 text-xs text-neutral-500 font-medium">
+                <span>Version 2.0</span>
+                <span>•</span>
+                <span>Last saved: Just now</span>
+              </div>
+            </div>
+            <Link href="/dashboard/builder/editor">
+              <Button className="h-12 px-8 rounded-xl bg-brand text-black hover:bg-brand/90 font-bold shadow-[0_0_20px_rgba(255,140,0,0.3)] transition-all hover:scale-105 gap-2 text-md">
+                <Settings2 className="h-5 w-5" /> Customize
+              </Button>
+            </Link>
           </div>
         </div>
 
-        <div className="p-4 space-y-2">
-          {sections.map(([key, name]) => {
-            const isOpen = openSection === key;
-            return (
-              <div
-                key={key}
-                className={`rounded-xl border transition-colors ${
-                  isOpen ? 'border-brand/40 bg-neutral-900/80' : 'border-border/40 bg-neutral-900/30 hover:border-border'
-                }`}
-              >
-                <div className="flex items-center justify-between pr-2">
-                  <button
-                    type="button"
-                    onClick={() => setOpenSection(isOpen ? '' : key)}
-                    className="flex items-center gap-2 flex-1 px-4 py-3 text-left"
-                  >
-                    <ChevronRight
-                      className={`h-4 w-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-90 text-brand' : ''}`}
-                    />
-                    <span className={`text-sm font-medium ${isOpen ? 'text-white' : 'text-neutral-300'}`}>
-                      {name}
-                    </span>
-                  </button>
-                  {isOpen && (
-                    <button
-                      type="button"
-                      onClick={() => resetSection(key)}
-                      className="p-1.5 text-neutral-600 hover:text-neutral-300 transition-colors"
-                      title="Restore this section to defaults"
-                    >
-                      <RotateCcw className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                </div>
-                {isOpen && (
-                  <div className="px-4 pb-4 pt-1 border-t border-border/30">
-                    <FieldEditor
-                      value={content[key]}
-                      path={[key]}
-                      fieldKey=""
-                      onChange={handleChange}
-                    />
+        {/* Bottom Section: Theme Library and Manual Colors */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* Left: Manual Color/Theme Settings */}
+          <div className="lg:col-span-1 space-y-6">
+            <div id="theme-settings-panel" className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 sticky top-6 scroll-mt-6">
+              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                <Paintbrush className="h-5 w-5 text-brand" /> Theme Settings
+              </h3>
+              
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-4">Brand Colors</h4>
+                  <div className="space-y-4">
+                    <ColorPicker label="Primary Brand" value={theme.colors.primary} onChange={(v) => updateThemeColor('primary', v)} />
+                    <ColorPicker label="Background" value={theme.colors.background} onChange={(v) => updateThemeColor('background', v)} />
+                    <ColorPicker label="Surface Cards" value={theme.colors.surface} onChange={(v) => updateThemeColor('surface', v)} />
+                    <ColorPicker label="Accent/Action" value={theme.colors.accent} onChange={(v) => updateThemeColor('accent', v)} />
                   </div>
-                )}
+                </div>
+
+                <div className="pt-6 border-t border-neutral-800">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-4">Typography</h4>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-neutral-400 text-xs">Headings Font</Label>
+                      <select 
+                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg h-10 px-3 text-sm text-white"
+                        value={theme.fonts.heading}
+                        onChange={(e) => setTheme({ ...theme, fonts: { ...theme.fonts, heading: e.target.value } })}
+                      >
+                        {FONT_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-neutral-400 text-xs">Body Font</Label>
+                      <select 
+                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg h-10 px-3 text-sm text-white"
+                        value={theme.fonts.body}
+                        onChange={(e) => setTheme({ ...theme, fonts: { ...theme.fonts, body: e.target.value } })}
+                      >
+                        {FONT_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  <Button 
+                    onClick={handleSave} 
+                    disabled={saving}
+                    className="w-full bg-white text-black hover:bg-neutral-200 font-bold"
+                  >
+                    {saving ? 'Saving...' : 'Save Theme Settings'}
+                  </Button>
+                </div>
               </div>
-            );
-          })}
+            </div>
+          </div>
+
+          {/* Right: Theme Library */}
+          <div className="lg:col-span-2 space-y-6">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              Theme Library
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-6">
+              {THEME_LIBRARY.map((libTheme) => (
+                <div key={libTheme.id} className="group rounded-xl border border-neutral-800 bg-neutral-900/50 overflow-hidden hover:border-brand/40 transition-all duration-300">
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={libTheme.image} 
+                      alt={libTheme.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                      <Button 
+                        variant="outline"
+                        className="bg-white text-black font-semibold hover:bg-brand hover:text-white hover:border-brand transition-colors"
+                        onClick={() => applyLibraryTheme(libTheme)}
+                      >
+                        Apply Theme
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <h4 className="text-lg font-bold text-white">{libTheme.name}</h4>
+                    <p className="text-xs text-neutral-500 mt-1">By {libTheme.author}</p>
+                    <p className="text-sm text-neutral-400 mt-3 line-clamp-2">{libTheme.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
+    </PlanGate>
+  );
+}
 
-      {/* RIGHT PANEL: Live preview */}
-      <div className="flex-1 bg-black relative hidden lg:block">
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 bg-neutral-900/80 backdrop-blur-md rounded-full border border-neutral-800 text-[10px] font-mono text-neutral-400 flex items-center gap-2 shadow-2xl">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-          </span>
-          LIVE PORTFOLIO PREVIEW
-        </div>
-
-        <iframe
-          src={tenant?.slug ? `http://localhost:21113?tenant=${tenant.slug}` : 'http://localhost:21113'}
-          className="w-full h-full border-0"
-          title="Portfolio Live Preview"
+function ColorPicker({ label, value, onChange }: { label: string, value: string, onChange: (val: string) => void }) {
+  return (
+    <div className="flex items-center justify-between group">
+      <Label className="text-sm text-neutral-300 font-medium cursor-pointer">{label}</Label>
+      <div className="flex items-center gap-2 bg-neutral-950 p-1.5 rounded-lg border border-neutral-800 ring-1 ring-transparent focus-within:ring-brand/50 transition-all">
+        <Input 
+          type="color" 
+          value={value} 
+          onChange={(e) => onChange(e.target.value)}
+          className="p-0 border-0 w-7 h-7 rounded cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded-md"
+        />
+        <Input 
+          value={value} 
+          onChange={(e) => onChange(e.target.value)}
+          className="h-7 w-20 border-0 bg-transparent text-xs uppercase font-mono p-0 focus-visible:ring-0 text-neutral-400 text-center"
         />
       </div>
     </div>
   );
-}
-
-function SaveIndicator({ state }: { state: SaveState }) {
-  if (state === 'saving') {
-    return (
-      <span className="flex items-center gap-1.5 text-[11px] text-neutral-400">
-        <Loader2 className="h-3 w-3 animate-spin" /> Saving…
-      </span>
-    );
-  }
-  if (state === 'saved') {
-    return (
-      <span className="flex items-center gap-1.5 text-[11px] text-green-400">
-        <CheckCircle2 className="h-3 w-3" /> Saved
-      </span>
-    );
-  }
-  if (state === 'error') {
-    return (
-      <span className="flex items-center gap-1.5 text-[11px] text-red-400">
-        <AlertCircle className="h-3 w-3" /> Error
-      </span>
-    );
-  }
-  return null;
 }

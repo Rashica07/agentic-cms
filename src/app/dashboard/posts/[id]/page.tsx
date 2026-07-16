@@ -106,7 +106,7 @@ export default function EditPost() {
             <Button variant="destructive" size="icon" type="button" onClick={handleDelete} isLoading={isDeleting} className="h-9 w-9">
               <Trash2 className="h-4 w-4" />
             </Button>
-            <Link href={`/dashboard/builder?page=${id}`}>
+            <Link href={`/dashboard/builder/editor?page=${id}`}>
               <Button type="button" variant="outline" className="border-border-strong bg-surface-2 text-white hover:bg-surface-2/80 gap-2">
                 <Paintbrush className="h-4 w-4" /> Visual Editor
               </Button>
@@ -180,7 +180,7 @@ export default function EditPost() {
             The post content is managed through the Visual Editor. You can add text blocks, images, headers, and completely customize the layout.
           </p>
         </div>
-        <Link href={`/dashboard/builder?page=${id}`}>
+        <Link href={`/dashboard/builder/editor?page=${id}`}>
           <Button size="lg" className="bg-brand text-black hover:bg-brand-hover gap-2 shadow-xl shadow-brand/20">
             <Paintbrush className="h-5 w-5" /> Open Visual Editor
           </Button>

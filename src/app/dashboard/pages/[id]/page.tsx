@@ -126,7 +126,7 @@ export default function EditPage() {
           <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting} size="icon" className="h-9 w-9 hidden sm:flex">
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Link href={`/dashboard/builder?page=${id}`}>
+          <Link href={`/dashboard/builder/editor?page=${id}`}>
             <Button variant="outline" className="border-border-strong bg-surface-2 text-white hover:bg-surface-2/80 gap-2">
               <Paintbrush className="h-4 w-4" />
               Visual Editor

@@ -2,29 +2,32 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  Settings as SettingsIcon, 
-  CreditCard, 
-  Users, 
-  Blocks, 
-  Bell, 
-  ScrollText, 
-  ShoppingCart, 
-  Store, 
-  ShieldCheck, 
-  Package, 
-  Percent, 
+import {
+  Settings as SettingsIcon,
+  CreditCard,
+  Users,
+  Blocks,
+  Bell,
+  ScrollText,
+  ShoppingCart,
+  Store,
+  ShieldCheck,
+  Package,
+  Percent,
   Building,
   HelpCircle,
-  Search
+  Search,
+  ToggleLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 
 const SETTINGS_SECTIONS = [
   { id: 'general', name: 'General', icon: SettingsIcon },
+  { id: 'modules', name: 'Modules', icon: ToggleLeft },
   { id: 'plan-billing', name: 'Plan & Billing', icon: CreditCard },
-  { id: 'staff', name: 'Staff & Permissions', icon: Users },
+  { id: 'team', name: 'Team & Permissions', icon: Users },
+  { id: 'audit', name: 'Activity Log', icon: ScrollText },
   { id: 'apps', name: 'Apps & Integrations', icon: Blocks },
   { id: 'notifications', name: 'Notifications', icon: Bell },
   { id: 'policies', name: 'Policies', icon: ScrollText },

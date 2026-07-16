@@ -168,7 +168,7 @@ export default function PostsPage() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link href={`/dashboard/builder?page=${post.id}`}>
+                        <Link href={`/dashboard/builder/editor?page=${post.id}`}>
                           <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-brand hover:bg-brand/10" title="Visual Editor">
                             <Paintbrush className="h-4 w-4" />
                           </Button>

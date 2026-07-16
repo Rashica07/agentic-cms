@@ -48,21 +48,48 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
+        impersonateToken: { label: 'Impersonate Token', type: 'text' },
       },
       async authorize(credentials) {
+        if (credentials?.impersonateToken) {
+          try {
+            // Parse the JWT to get user details
+            const tokenStr = credentials.impersonateToken;
+            const payload = JSON.parse(Buffer.from(tokenStr.split('.')[1], 'base64').toString());
+            
+            // Get tenant info to populate plan/status
+            const refreshPulse = new NovusPulse({
+              baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+              accessToken: tokenStr,
+            });
+            const tenant = await refreshPulse.getMyTenant();
+
+            return {
+              id: payload.sub,
+              email: payload.email,
+              name: 'Admin (Impersonating)',
+              role: payload.role,
+              tenantId: payload.tenantId,
+              firstName: 'Admin',
+              lastName: '(Impersonating)',
+              plan: tenant.plan ?? 'starter',
+              status: (tenant as any).status ?? 'active',
+              tenantSlug: tenant.slug ?? null,
+              accessToken: tokenStr,
+              refreshToken: '', // No refresh token during impersonation
+            } as any;
+          } catch (e: any) {
+            console.error('Impersonation failed', e);
+            throw new Error('Invalid impersonation token');
+          }
+        }
+
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        let email = credentials.email;
-        let password = credentials.password;
-
-        const isAdminShorthand = email === 'admin' && password === '1234';
-
-        if (isAdminShorthand) {
-          email = 'admin@novuspulse.dev';
-          password = 'AdminPassword1234'; // complies with backend uppercase/lowercase/number/min length limits
-        }
+        const email = credentials.email;
+        const password = credentials.password;
 
         const loginUser = async () => {
           return await pulse.login({
@@ -88,40 +115,6 @@ export const authOptions: NextAuthOptions = {
             refreshToken: response.refreshToken,
           } as any;
         } catch (error: any) {
-          // If they typed admin/1234 and it failed, register them first!
-          if (isAdminShorthand) {
-            try {
-              // 1. Register tenant & user
-              await pulse.register({
-                email,
-                password,
-                firstName: 'System',
-                lastName: 'Admin',
-                tenantName: 'Admin Workspace',
-                tenantSlug: 'admin-workspace',
-              });
-
-              // 2. Retry login
-              const response = await loginUser();
-              return {
-                id: response.user.id,
-                email: response.user.email,
-                name: `${response.user.firstName} ${response.user.lastName}`,
-                role: response.user.role,
-                tenantId: response.user.tenantId,
-                firstName: response.user.firstName,
-                lastName: response.user.lastName,
-                plan: (response.user as any).plan ?? 'starter',
-                status: (response.user as any).status ?? 'active',
-                tenantSlug: (response.user as any).tenantSlug ?? null,
-                accessToken: response.accessToken,
-                refreshToken: response.refreshToken,
-              } as any;
-            } catch (regError: any) {
-              throw new Error(regError.message || 'Auto-registration failed');
-            }
-          }
-
           throw new Error(error.message || 'Authentication failed');
         }
       },

@@ -30,11 +30,14 @@ import {
   Newspaper,
   Folder,
   Sparkles,
+  Database,
+  Layers,
 } from 'lucide-react';
 import { useState, useEffect, Suspense } from 'react';
 import { useUIStore } from '@/store/useStore';
 import { usePlan } from '@/hooks/usePlan';
 import { useApiStatus } from '@/hooks/useApiStatus';
+import { useEnabledModules, type ModuleKey } from '@/hooks/useModules';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SupportWidget } from '@/components/support-widget';
@@ -47,7 +50,6 @@ import {
   isPlan,
 } from '@/lib/plan';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:21113';
 
 type NavItem = {
   name: string;
@@ -55,6 +57,8 @@ type NavItem = {
   icon: React.ElementType;
   external?: boolean;
   gate?: FeatureKey;
+  /** Module key this item belongs to — hidden when the tenant disables it. Omit to always show. */
+  module?: ModuleKey;
   children?: { name: string; href: string; icon: React.ElementType }[];
 };
 type NavGroup = { label: string; items: NavItem[] };
@@ -65,45 +69,42 @@ function buildNav(isSuperAdmin: boolean): NavGroup[] {
   groups.push({
     label: '',
     items: [
-      { name: 'Home', href: '/dashboard', icon: Home },
-      { name: 'AI Agent', href: '/dashboard/agent', icon: Sparkles },
+      { name: 'Dashboard', href: '/dashboard', icon: Home },
+      { name: 'Copilot', href: '/dashboard/agent', icon: Sparkles, module: 'agent' },
     ],
   });
 
   groups.push({
-    label: 'Sales channels',
+    label: 'Content Modeling',
     items: [
-      { name: 'Online Store', href: '/dashboard/websites', icon: Globe, gate: 'multisite' },
+      { name: 'Schema Builder', href: '/dashboard/schema', icon: Database, module: 'content' },
     ],
   });
 
   groups.push({
-    label: 'Content Management',
+    label: 'Content Library',
     items: [
-      { name: 'Pages', href: '/dashboard/pages', icon: FileText },
-      { name: 'Posts', href: '/dashboard/posts', icon: Newspaper },
-      { name: 'Categories', href: '/dashboard/categories', icon: Folder },
-      { name: 'Visual Editor', href: '/dashboard/builder', icon: Paintbrush },
-      { name: 'Media Library', href: '/dashboard/photos', icon: ImageIcon },
+      { name: 'Entries', href: '/dashboard/content', icon: Layers, module: 'content' },
+      { name: 'Media Library', href: '/dashboard/media', icon: ImageIcon, module: 'media' },
     ],
   });
 
   groups.push({
-    label: 'Storefront',
+    label: 'Site Ops',
     items: [
-      { name: 'Forms & Leads', href: '/dashboard/forms', icon: FormInput, gate: 'forms' },
-      { name: 'Themes', href: '/dashboard/themes', icon: Palette, gate: 'themes' },
-      { name: 'Menus', href: '/dashboard/menus', icon: AlignLeft, gate: 'menus' },
+      { name: 'Visual Editor', href: '/dashboard/builder', icon: Paintbrush, module: 'pages' },
+      { name: 'SEO & Meta', href: '/dashboard/seo', icon: SearchCheck, gate: 'seo' },
     ],
   });
 
-  groups.push({
-    label: 'Growth',
-    items: [
-      { name: 'Analytics', href: '/dashboard/analytics', icon: LineChart, gate: 'analytics' },
-      { name: 'SEO', href: '/dashboard/seo', icon: SearchCheck, gate: 'seo' },
-    ],
-  });
+  if (isSuperAdmin) {
+    groups.push({
+      label: 'Super Admin',
+      items: [
+        { name: 'Tenants', href: '/dashboard/tenants', icon: Building2 },
+      ],
+    });
+  }
 
   return groups;
 }
@@ -136,6 +137,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   
   const apiOnline = useApiStatus();
   const { plan, isPreviewing, isSuperAdmin } = usePlan();
+  const { isModuleEnabled } = useEnabledModules();
 
   useEffect(() => {
     if (session?.user && !activeTenantId) {
@@ -148,7 +150,15 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   }, [session, activeTenantId, setActiveTenant]);
 
   const role = session?.user?.role ?? '';
-  const navGroups = buildNav(isSuperAdmin);
+  // Items without a `module` key always show; items with one are hidden
+  // once the tenant disables that module. Groups left with no items are
+  // dropped so we don't render an empty section header.
+  const navGroups = buildNav(isSuperAdmin)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.module || isModuleEnabled(item.module)),
+    }))
+    .filter((group) => group.items.length > 0);
 
   // Current page title for Breadcrumbs
   const activeNavItem = navGroups
@@ -185,7 +195,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             <div className="h-6 w-6 rounded bg-brand flex items-center justify-center text-black font-black text-xs">
               NP
             </div>
-            <span>Novus Pulse</span>
+            <span>Agentic CMS</span>
           </Link>
           <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8 rounded-md" onClick={closeSidebar}>
             <X className="h-4 w-4" />

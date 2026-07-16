@@ -1,7 +1,7 @@
 'use client';
 
 import { usePages } from '@/hooks/usePages';
-import { usePhotos } from '@/hooks/usePhotos';
+import { useMedia } from '@/hooks/useMedia';
 import { useApiStatus } from '@/hooks/useApiStatus';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,45 +25,35 @@ import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:21113';
+import { useStats } from '@/hooks/useStats';
 
-// Mock chart data
-const chartData = [
-  { date: 'Mon', views: 400 },
-  { date: 'Tue', views: 300 },
-  { date: 'Wed', views: 550 },
-  { date: 'Thu', views: 450 },
-  { date: 'Fri', views: 700 },
-  { date: 'Sat', views: 650 },
-  { date: 'Sun', views: 800 },
-];
 
 function StatCard({
   label,
   value,
-  trend,
+  icon: Icon,
+  iconClassName,
+  hint,
   className,
 }: {
   label: string;
   value: React.ReactNode;
-  trend?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconClassName?: string;
+  hint?: React.ReactNode;
   className?: string;
 }) {
   return (
-    <Card className={cn('bg-surface hover:bg-surface-2 transition-colors border-border shadow-sm', className)}>
+    <Card className={cn('bg-surface hover:border-border-strong transition-colors border-border shadow-sm', className)}>
       <CardContent className="p-5">
-        <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-neutral-400">{label}</span>
-          <div className="flex items-end gap-3 mt-1">
-            <span className="text-2xl font-bold text-white leading-none">{value}</span>
-            {trend && (
-              <span className="flex items-center text-xs font-semibold text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded">
-                <ArrowUpRight className="h-3 w-3 mr-0.5" />
-                {trend}
-              </span>
-            )}
+          <div className={cn('h-8 w-8 rounded-lg flex items-center justify-center shrink-0', iconClassName)}>
+            <Icon className="h-4 w-4" />
           </div>
         </div>
+        <span className="text-2xl font-bold text-white leading-none">{value}</span>
+        <p className="text-xs text-neutral-500 mt-2 min-h-[1em]">{hint}</p>
       </CardContent>
     </Card>
   );
@@ -79,11 +69,14 @@ function greeting(): string {
 export default function DashboardOverview() {
   const { data: session } = useSession();
   const { data: pages, isLoading: isLoadingPages } = usePages();
-  const { data: photos, isLoading: isLoadingPhotos } = usePhotos();
+  const { data: photos, isLoading: isLoadingPhotos } = useMedia();
+  const { data: stats, isLoading: isLoadingStats } = useStats(7);
   const apiOnline = useApiStatus();
 
   const firstName = session?.user?.name?.split(' ')[0];
   const publishedCount = pages?.filter((p) => p.published).length ?? 0;
+  const draftCount = (pages?.length ?? 0) - publishedCount;
+  const mediaCount = (photos as any)?.total ?? 0;
 
   // Last 5 updated pages
   const recentPages = pages
@@ -97,6 +90,11 @@ export default function DashboardOverview() {
     day: 'numeric',
     month: 'long',
   });
+
+  const chartData = stats?.dailyViews?.map((d: any) => ({
+    date: new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }),
+    views: d.views
+  })) || [];
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -119,17 +117,45 @@ export default function DashboardOverview() {
 
       {/* ─── STATS GRID ───────────────────────────────────── */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Pages" value={isLoadingPages ? '–' : pages?.length ?? 0} trend="12%" className="anim-fade-up stagger-1" />
-        <StatCard label="Published" value={isLoadingPages ? '–' : publishedCount} trend="5%" className="anim-fade-up stagger-2" />
-        <StatCard label="Media Assets" value={isLoadingPhotos ? '–' : photos?.length ?? 0} trend="24%" className="anim-fade-up stagger-3" />
-        <StatCard 
-          label="Live Sync Status" 
+        <StatCard
+          label="Total Pages"
+          value={isLoadingPages ? '–' : pages?.length ?? 0}
+          icon={FileText}
+          iconClassName="bg-brand/10 text-brand"
+          hint={!isLoadingPages && draftCount > 0 ? `${draftCount} draft${draftCount === 1 ? '' : 's'}` : undefined}
+          className="anim-fade-up stagger-1"
+        />
+        <StatCard
+          label="Published"
+          value={isLoadingPages ? '–' : publishedCount}
+          icon={CheckCircle2}
+          iconClassName="bg-green-500/10 text-green-400"
+          hint={!isLoadingPages && pages?.length ? `${Math.round((publishedCount / pages.length) * 100)}% of total` : undefined}
+          className="anim-fade-up stagger-2"
+        />
+        <StatCard
+          label="Total Views (7d)"
+          value={isLoadingStats ? '–' : stats?.totalViews ?? 0}
+          icon={TrendingUp}
+          iconClassName="bg-blue-500/10 text-blue-400"
+          hint={!isLoadingStats ? `${stats?.uniqueVisitors ?? 0} unique visitors` : undefined}
+          className="anim-fade-up stagger-3"
+        />
+        <StatCard
+          label="Live Sync Status"
           value={
             <span className={cn('text-lg', apiOnline === null ? 'text-neutral-400' : apiOnline ? 'text-green-400' : 'text-red-400')}>
               {apiOnline === null ? 'Checking…' : apiOnline ? 'Online' : 'Offline'}
             </span>
-          } 
-          className="anim-fade-up stagger-4" 
+          }
+          icon={Zap}
+          iconClassName={cn(
+            apiOnline === true && 'bg-green-500/10 text-green-400',
+            apiOnline === false && 'bg-red-500/10 text-red-400',
+            apiOnline === null && 'bg-neutral-500/10 text-neutral-400',
+          )}
+          hint={apiOnline === false ? 'Check your API connection' : apiOnline === true ? 'All systems normal' : undefined}
+          className="anim-fade-up stagger-4"
         />
       </div>
 
@@ -274,11 +300,15 @@ export default function DashboardOverview() {
                   <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
                   <span className="text-neutral-400 line-through">Create workspace</span>
                 </div>
-                <div className="flex items-start gap-3 text-sm font-medium text-white">
-                  <div className="h-5 w-5 rounded-full border-2 border-brand flex items-center justify-center shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-brand" />
-                  </div>
-                  Add your first page
+                <div className={cn('flex items-start gap-3 text-sm', (pages?.length ?? 0) > 0 ? 'text-neutral-400' : 'font-medium text-white')}>
+                  {(pages?.length ?? 0) > 0 ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                  ) : (
+                    <div className="h-5 w-5 rounded-full border-2 border-brand flex items-center justify-center shrink-0">
+                      <div className="h-2 w-2 rounded-full bg-brand" />
+                    </div>
+                  )}
+                  <span className={(pages?.length ?? 0) > 0 ? 'line-through' : undefined}>Add your first page</span>
                 </div>
                 <div className="flex items-start gap-3 text-sm text-neutral-400">
                   <div className="h-5 w-5 rounded-full border-2 border-neutral-600 shrink-0" />
@@ -298,29 +328,35 @@ export default function DashboardOverview() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="flex flex-col">
-                <Link href="/dashboard/builder" className="flex items-center gap-3 p-4 hover:bg-surface-2 transition-colors border-b border-border/50">
-                  <div className="h-8 w-8 rounded bg-brand/10 text-brand flex items-center justify-center shrink-0">
+                <Link href="/dashboard/builder" className="group flex items-center gap-3 p-4 hover:bg-surface-2 transition-colors border-b border-border/50">
+                  <div className="h-8 w-8 rounded bg-brand/10 text-brand flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Paintbrush className="h-4 w-4" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-white">Visual Editor</p>
                     <p className="text-xs text-neutral-400">Design your live site</p>
                   </div>
+                  {!isLoadingPages && (
+                    <span className="text-xs text-neutral-500 shrink-0">{pages?.length ?? 0} pages</span>
+                  )}
                 </Link>
-                <Link href="/dashboard/photos" className="flex items-center gap-3 p-4 hover:bg-surface-2 transition-colors border-b border-border/50">
-                  <div className="h-8 w-8 rounded bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+                <Link href="/dashboard/media" className="group flex items-center gap-3 p-4 hover:bg-surface-2 transition-colors border-b border-border/50">
+                  <div className="h-8 w-8 rounded bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <ImageIcon className="h-4 w-4" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-white">Upload Media</p>
                     <p className="text-xs text-neutral-400">Add photos to your library</p>
                   </div>
+                  {!isLoadingPhotos && (
+                    <span className="text-xs text-neutral-500 shrink-0">{mediaCount} files</span>
+                  )}
                 </Link>
-                <Link href="/dashboard/settings" className="flex items-center gap-3 p-4 hover:bg-surface-2 transition-colors">
-                  <div className="h-8 w-8 rounded bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
+                <Link href="/dashboard/settings" className="group flex items-center gap-3 p-4 hover:bg-surface-2 transition-colors">
+                  <div className="h-8 w-8 rounded bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Settings className="h-4 w-4" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-white">Manage Settings</p>
                     <p className="text-xs text-neutral-400">Configure your tenant</p>
                   </div>

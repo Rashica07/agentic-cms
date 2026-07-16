@@ -170,20 +170,20 @@ export default function LandingPage() {
           {/* Left: message */}
           <div className="text-center lg:text-left">
             <span className="hero-badge inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-xs font-medium text-brand mb-8">
-              <Sparkles className="h-3.5 w-3.5" /> Your website, managed by messages
+              <Sparkles className="h-3.5 w-3.5" /> Two powerful products. One central brain.
             </span>
 
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
-              <span className="hero-line block">Just tell us</span>
-              <span className="hero-line block bg-gradient-to-r from-brand via-orange-400 to-amber-300 bg-clip-text text-transparent">
-                what to change.
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">
+              <span className="hero-line block">Headless CMS</span>
+              <span className="hero-line block text-2xl md:text-3xl text-neutral-400 font-medium mt-2">&</span>
+              <span className="hero-line block bg-gradient-to-r from-brand via-orange-400 to-amber-300 bg-clip-text text-transparent mt-1">
+                WhatsApp Admin Panel
               </span>
-              <span className="hero-line block">We show you first.</span>
             </h1>
 
             <p className="hero-sub mt-7 max-w-xl mx-auto lg:mx-0 text-lg text-neutral-400">
-              No dashboards. No training. Describe the change like you&apos;d tell an employee, approve
-              the preview, and it&apos;s live in seconds — on the web or straight from WhatsApp.
+              <strong>For Owners:</strong> An Admin Panel where you update your site by simply texting a WhatsApp bot. <br className="hidden md:block"/>
+              <strong>For Agencies:</strong> A full Headless Agentic CMS with a powerful API and built-in AI Copilot.
             </p>
 
             <div className="mt-9 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4">

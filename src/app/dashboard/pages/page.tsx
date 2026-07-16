@@ -261,7 +261,7 @@ export default function PagesList() {
                                 <Link href={`/dashboard/pages/${page.id}`}>Edit Metadata</Link>
                               </DropdownMenu.Item>
                               <DropdownMenu.Item className="rounded-md px-2 py-1.5 text-sm text-neutral-200 hover:bg-brand/10 hover:text-brand cursor-pointer outline-none transition-colors" asChild>
-                                <Link href={`/dashboard/builder?page=${page.id}`}>Visual Editor</Link>
+                                <Link href={`/dashboard/builder/editor?page=${page.id}`}>Visual Editor</Link>
                               </DropdownMenu.Item>
                               <div className="h-px bg-border my-1" />
                               <DropdownMenu.Item className="rounded-md px-2 py-1.5 text-sm text-neutral-200 hover:bg-surface cursor-pointer outline-none transition-colors">
