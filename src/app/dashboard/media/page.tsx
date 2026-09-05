@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Image as ImageIcon, Plus, Trash2, Copy, ExternalLink, Link as LinkIcon, Loader2, UploadCloud, Folder, FolderOpen, ChevronRight, HardDrive, Globe, FileWarning } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
-import * as Dialog from '@radix-ui/react-dialog';
+import * as RadixDialog from '@radix-ui/react-dialog';
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 /** Accepted upload types — mirrors the backend's raster-only allowlist (svg/ico rejected as an XSS vector). */
@@ -157,99 +158,89 @@ export default function MediaPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Dialog.Root open={isFolderOpen} onOpenChange={setIsFolderOpen}>
-            <Dialog.Trigger asChild>
+          <Dialog open={isFolderOpen} onOpenChange={setIsFolderOpen}>
+            <DialogTrigger asChild>
               <Button variant="outline" className="gap-2 rounded-full px-5 shadow-sm bg-surface hover:bg-surface-2 border-border-strong text-white">
                 <Folder className="h-4 w-4" /> New Folder
               </Button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-              <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-sm translate-x-[-50%] translate-y-[-50%] gap-4 border border-border-strong bg-surface p-6 shadow-2xl sm:rounded-2xl">
-                <Dialog.Title className="text-lg font-bold text-white">Create Folder</Dialog.Title>
-                <form onSubmit={handleCreateFolder} className="space-y-4 pt-2">
-                  <Input 
-                    placeholder="Folder Name" 
-                    value={newFolderName}
-                    onChange={(e) => setNewFolderName(e.target.value)}
-                    className="bg-surface-2 border-border-strong"
-                    autoFocus
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Dialog.Close asChild>
-                      <Button type="button" variant="ghost">Cancel</Button>
-                    </Dialog.Close>
-                    <Button type="submit" className="bg-brand text-black hover:bg-brand-hover" disabled={isCreatingFolder}>
-                      {isCreatingFolder ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create'}
-                    </Button>
-                  </div>
-                </form>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+            </DialogTrigger>
+            <DialogContent className="max-w-sm">
+              <DialogTitle>Create Folder</DialogTitle>
+              <form onSubmit={handleCreateFolder} className="space-y-4 pt-2">
+                <Input
+                  placeholder="Folder Name"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  className="bg-surface-2 border-border-strong"
+                  autoFocus
+                />
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="ghost" onClick={() => setIsFolderOpen(false)}>Cancel</Button>
+                  <Button type="submit" className="bg-brand text-black hover:bg-brand-hover" disabled={isCreatingFolder}>
+                    {isCreatingFolder ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create'}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
 
-          <Dialog.Root open={isAddOpen} onOpenChange={setIsAddOpen}>
-            <Dialog.Trigger asChild>
+          <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+            <DialogTrigger asChild>
               <Button className="bg-brand text-black hover:bg-brand-hover gap-2 rounded-full px-5 font-semibold shadow-sm">
                 <Plus className="h-4 w-4" /> Upload
               </Button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-              <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border-strong bg-surface p-0 shadow-2xl sm:rounded-2xl md:w-full overflow-hidden">
-                <div className="bg-brand/10 border-b border-border/50 p-6 flex flex-col items-center justify-center text-center">
-                  <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center mb-4">
-                    <UploadCloud className="h-6 w-6 text-brand" />
-                  </div>
-                  <Dialog.Title className="text-xl font-bold text-white">Upload Asset</Dialog.Title>
-                  <Dialog.Description className="text-sm text-neutral-400 mt-1">Select a file to upload to the library.</Dialog.Description>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg gap-0 p-0 overflow-hidden">
+              <div className="bg-brand/10 border-b border-border/50 p-6 flex flex-col items-center justify-center text-center">
+                <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center mb-4">
+                  <UploadCloud className="h-6 w-6 text-brand" />
                 </div>
-                <form onSubmit={handleAddMedia} className="p-6 space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="file" className="text-sm font-medium text-neutral-300">Select File</Label>
-                    <Input
-                      id="file"
-                      type="file"
-                      accept={ALLOWED_UPLOAD_ACCEPT}
-                      onChange={handleFileInputChange}
-                      ref={fileInputRef}
-                      className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm pt-2"
-                    />
-                    <p className="text-[11px] text-neutral-500">Webp, jpg, jpe, png, gif, or avif only.</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="altText" className="text-sm font-medium text-neutral-300">Alt Text (Optional)</Label>
-                    <Input 
-                      id="altText" 
-                      placeholder="A description for screen readers" 
-                      value={newAltText}
-                      onChange={(e) => setNewAltText(e.target.value)}
-                      className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="caption" className="text-sm font-medium text-neutral-300">Caption (Optional)</Label>
-                    <Input 
-                      id="caption" 
-                      placeholder="Display caption for the image" 
-                      value={newCaption}
-                      onChange={(e) => setNewCaption(e.target.value)}
-                      className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-3 pt-4">
-                    <Dialog.Close asChild>
-                      <Button type="button" variant="ghost" className="rounded-full px-6 hover:bg-neutral-800 text-neutral-300">Cancel</Button>
-                    </Dialog.Close>
-                    <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-black hover:bg-brand-hover font-semibold">
-                      {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
-                      Upload
-                    </Button>
-                  </div>
-                </form>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+                <DialogTitle className="text-xl font-bold text-white">Upload Asset</DialogTitle>
+                <DialogDescription className="mt-1">Select a file to upload to the library.</DialogDescription>
+              </div>
+              <form onSubmit={handleAddMedia} className="p-6 space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="file" className="text-sm font-medium text-neutral-300">Select File</Label>
+                  <Input
+                    id="file"
+                    type="file"
+                    accept={ALLOWED_UPLOAD_ACCEPT}
+                    onChange={handleFileInputChange}
+                    ref={fileInputRef}
+                    className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm pt-2"
+                  />
+                  <p className="text-[11px] text-neutral-500">Webp, jpg, jpe, png, gif, or avif only.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="altText" className="text-sm font-medium text-neutral-300">Alt Text (Optional)</Label>
+                  <Input
+                    id="altText"
+                    placeholder="A description for screen readers"
+                    value={newAltText}
+                    onChange={(e) => setNewAltText(e.target.value)}
+                    className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="caption" className="text-sm font-medium text-neutral-300">Caption (Optional)</Label>
+                  <Input
+                    id="caption"
+                    placeholder="Display caption for the image"
+                    value={newCaption}
+                    onChange={(e) => setNewCaption(e.target.value)}
+                    className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm"
+                  />
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button type="button" variant="ghost" className="rounded-full px-6 hover:bg-neutral-800 text-neutral-300" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                  <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-black hover:bg-brand-hover font-semibold">
+                    {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
+                    Upload
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -440,21 +431,21 @@ export default function MediaPage() {
       </div>
 
       {/* Details Drawer / Modal */}
-      <Dialog.Root open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-          <Dialog.Content className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md border-l border-border bg-surface shadow-2xl duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:w-[400px] flex flex-col">
+      <RadixDialog.Root open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
+        <RadixDialog.Portal>
+          <RadixDialog.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <RadixDialog.Content className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md border-l border-border bg-surface shadow-2xl duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:w-[400px] flex flex-col">
             {selectedPhoto && (
               <>
                 <div className="flex items-center justify-between p-6 border-b border-border/50 shrink-0">
-                  <Dialog.Title className="text-lg font-bold text-white">Asset Details</Dialog.Title>
-                  <Dialog.Close asChild>
+                  <RadixDialog.Title className="text-lg font-bold text-white">Asset Details</RadixDialog.Title>
+                  <RadixDialog.Close asChild>
                     <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-neutral-800">
                       <XIcon className="h-4 w-4" />
                     </Button>
-                  </Dialog.Close>
+                  </RadixDialog.Close>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto p-6 space-y-8">
                   <div className="bg-surface-2 border border-border-strong rounded-2xl overflow-hidden aspect-video flex items-center justify-center">
                     <img 
@@ -544,9 +535,9 @@ export default function MediaPage() {
                 </div>
               </>
             )}
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+          </RadixDialog.Content>
+        </RadixDialog.Portal>
+      </RadixDialog.Root>
 
     </div>
   );
