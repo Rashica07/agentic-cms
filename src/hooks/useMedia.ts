@@ -3,6 +3,14 @@ import { useSession } from 'next-auth/react';
 import { useUIStore } from '@/store/useStore';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 
+/**
+ * NEXT_PUBLIC_API_URL is the bare origin (e.g. http://localhost:3000) — the
+ * backend serves everything under /api/v1, which the SDK appends internally.
+ * These hooks talk to the media endpoints with raw fetch (multipart upload and
+ * folders have no SDK methods), so they must add the prefix themselves.
+ */
+const API_BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/v1`;
+
 export function useMedia(folderId?: string) {
   const { data: session } = useSession();
   const { activeTenantId } = useUIStore();
@@ -10,7 +18,7 @@ export function useMedia(folderId?: string) {
   return useQuery({
     queryKey: ['media', activeTenantId, folderId],
     queryFn: async () => {
-      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/media`);
+      const url = new URL(`${API_BASE}/media`);
       if (folderId) url.searchParams.set('folderId', folderId);
       
       const res = await fetch(url.toString(), {
@@ -54,7 +62,7 @@ export function useMediaFolders(parentId?: string) {
   return useQuery({
     queryKey: ['media-folders', activeTenantId, parentId],
     queryFn: async () => {
-      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/media/folders`);
+      const url = new URL(`${API_BASE}/media/folders`);
       if (parentId) url.searchParams.set('parentId', parentId);
       
       const res = await fetch(url.toString(), {
@@ -77,7 +85,7 @@ export function useUploadMedia() {
   
   return useMutation({
     mutationFn: async (data: FormData) => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/media/upload`, {
+      const res = await fetch(`${API_BASE}/media/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session?.accessToken}`,
@@ -100,8 +108,18 @@ export function useUpdateMedia() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string, data: { altText?: string; caption?: string; folderId?: string | null } }) => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/media/${id}`, {
+    mutationFn: async ({ id, data }: {
+      id: string;
+      data: {
+        altText?: string;
+        caption?: string;
+        folderId?: string | null;
+        /** Focal point for smart cropping, 0..1 each; null clears it. */
+        focalX?: number | null;
+        focalY?: number | null;
+      };
+    }) => {
+      const res = await fetch(`${API_BASE}/media/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +144,7 @@ export function useDeleteMedia() {
   
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/media/${id}`, {
+      const res = await fetch(`${API_BASE}/media/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.accessToken}`,
@@ -149,7 +167,7 @@ export function useCreateFolder() {
   
   return useMutation({
     mutationFn: async (data: { name: string; parentId?: string }) => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/media/folders`, {
+      const res = await fetch(`${API_BASE}/media/folders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

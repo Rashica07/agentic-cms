@@ -21,10 +21,18 @@ import {
   ShoppingBag,
   LineChart,
   Sparkles,
+  CalendarCheck,
+  Users2,
+  Mail,
 } from 'lucide-react';
 import { MODULE_KEYS, type ModuleKey, useEnabledModules, useUpdateModules } from '@/hooks/useModules';
 
 const MODULE_META: Record<ModuleKey, { label: string; description: string; icon: LucideIcon }> = {
+  reservations: {
+    label: 'Reservations',
+    description: 'Bookings, tables and opening hours — including the public booking API.',
+    icon: CalendarCheck,
+  },
   pages: {
     label: 'Pages',
     description: 'Published site pages built with the visual editor.',
@@ -64,6 +72,16 @@ const MODULE_META: Record<ModuleKey, { label: string; description: string; icon:
     label: 'Copilot',
     description: 'The AI copilot / tool-calling assistant.',
     icon: Sparkles,
+  },
+  crm: {
+    label: 'CRM',
+    description: 'Contacts, notes and pipeline — auto-linked from forms and reservations.',
+    icon: Users2,
+  },
+  email: {
+    label: 'Email Campaigns',
+    description: 'Newsletters and broadcasts to CRM contacts, with templates and scheduling.',
+    icon: Mail,
   },
 };
 
@@ -125,7 +143,7 @@ export default function ModulesSettingsPage() {
           {isLoading ? (
             <div className="space-y-3">
               {MODULE_KEYS.map((key) => (
-                <div key={key} className="h-16 animate-pulse rounded-xl bg-neutral-900" />
+                <div key={key} className="h-16 animate-pulse rounded-xl bg-muted" />
               ))}
             </div>
           ) : (
@@ -140,7 +158,7 @@ export default function ModulesSettingsPage() {
                         <meta.icon className="h-4 w-4 text-neutral-400" />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-sm font-medium text-white">{meta.label}</h4>
+                        <h4 className="text-sm font-medium text-foreground">{meta.label}</h4>
                         <p className="text-[13px] text-neutral-400 mt-0.5">{meta.description}</p>
                       </div>
                     </div>

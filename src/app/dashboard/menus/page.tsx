@@ -69,7 +69,7 @@ export default function MenusPage() {
         </div>
 
         {isLoading ? (
-          <div className="h-64 animate-pulse rounded-xl bg-neutral-900" />
+          <div className="h-64 animate-pulse rounded-xl bg-muted" />
         ) : (
           <div className="grid lg:grid-cols-4 gap-6">
             
@@ -115,8 +115,8 @@ export default function MenusPage() {
                     className={cn(
                       "w-full flex items-center justify-between p-3 rounded-lg border transition-all text-left",
                       (activeMenuId === menu.id || (!activeMenuId && activeMenu?.id === menu.id))
-                        ? "bg-neutral-800 border-neutral-700 shadow-sm"
-                        : "bg-transparent border-transparent hover:bg-neutral-900"
+                        ? "bg-muted border-border shadow-sm"
+                        : "bg-transparent border-transparent hover:bg-muted"
                     )}
                   >
                     <div>
@@ -134,7 +134,7 @@ export default function MenusPage() {
               {activeMenu ? (
                 <MenuBuilder menu={activeMenu} />
               ) : (
-                <div className="h-64 flex flex-col items-center justify-center border border-dashed border-neutral-800 rounded-xl text-neutral-500">
+                <div className="h-64 flex flex-col items-center justify-center border border-dashed border-border rounded-xl text-neutral-500">
                   <LayoutList className="h-8 w-8 mb-2 opacity-50" />
                   <p className="text-sm">Create a menu to get started</p>
                 </div>
@@ -192,7 +192,7 @@ function MenuBuilder({ menu }: { menu: Menu }) {
 
   return (
     <Card className="h-full flex flex-col">
-      <CardHeader className="border-b border-neutral-800 pb-4">
+      <CardHeader className="border-b border-border pb-4">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>{menu.name}</CardTitle>
@@ -204,10 +204,10 @@ function MenuBuilder({ menu }: { menu: Menu }) {
         </div>
       </CardHeader>
       
-      <CardContent className="p-6 flex-1 bg-neutral-950/50">
+      <CardContent className="p-6 flex-1 bg-muted/50">
         <div className="space-y-3">
           {items.map((item, i) => (
-            <div key={item.id} className="flex items-center gap-3 bg-neutral-900 border border-neutral-800 p-3 rounded-lg group">
+            <div key={item.id} className="flex items-center gap-3 bg-card border border-border p-3 rounded-lg group">
               <div className="cursor-grab p-1 text-neutral-600 hover:text-neutral-300 active:cursor-grabbing">
                 <GripVertical className="h-5 w-5" />
               </div>
@@ -217,7 +217,7 @@ function MenuBuilder({ menu }: { menu: Menu }) {
                   <Input 
                     value={item.label} 
                     onChange={e => updateItem(item.id, 'label', e.target.value)}
-                    className="h-9 bg-neutral-950 border-neutral-800"
+                    className="h-9"
                   />
                 </div>
                 <div className="space-y-1">
@@ -225,7 +225,7 @@ function MenuBuilder({ menu }: { menu: Menu }) {
                   <Input 
                     value={item.url} 
                     onChange={e => updateItem(item.id, 'url', e.target.value)}
-                    className="h-9 bg-neutral-950 border-neutral-800 font-mono text-sm"
+                    className="h-9 font-mono text-sm"
                   />
                 </div>
               </div>
@@ -236,12 +236,12 @@ function MenuBuilder({ menu }: { menu: Menu }) {
           ))}
 
           {items.length === 0 && (
-            <div className="py-8 text-center text-sm text-neutral-500 border border-dashed border-neutral-800 rounded-lg">
+            <div className="py-8 text-center text-sm text-neutral-500 border border-dashed border-border rounded-lg">
               No links in this menu. Add one below.
             </div>
           )}
 
-          <Button variant="outline" className="w-full border-dashed gap-2 text-neutral-400 hover:text-white" onClick={addItem}>
+          <Button variant="outline" className="w-full border-dashed gap-2 text-neutral-400 hover:text-foreground" onClick={addItem}>
             <Plus className="h-4 w-4" /> Add Link
           </Button>
         </div>

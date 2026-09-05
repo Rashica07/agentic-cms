@@ -3,12 +3,24 @@
 import { useState, useEffect, use } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Loader2, Eye, Sparkles, Bot, Send } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Sparkles, Send, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
+import { ReferencePicker } from '@/components/content/reference-picker';
+import { MediaPicker } from '@/components/content/media-picker';
+import { SeoPanel, type SeoData } from '@/components/content/seo-panel';
+
+/** Locales offered in the editor. Entry `locale` is free-form on the backend. */
+const LOCALES = [
+  { value: 'en', label: 'English' },
+  { value: 'sq', label: 'Shqip' },
+  { value: 'it', label: 'Italiano' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'es', label: 'Español' },
+];
 
 type ContentField = {
   apiId: string;
@@ -37,8 +49,11 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
   const [slug, setSlug] = useState('');
   const [status, setStatus] = useState('draft');
   const [scheduledAt, setScheduledAt] = useState('');
+  const [locale, setLocale] = useState('en');
+  const [seo, setSeo] = useState<SeoData>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -62,6 +77,8 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
         setFormData(entryData.data || {});
         setSlug(entryData.slug);
         setStatus(entryData.status);
+        setLocale(entryData.locale || 'en');
+        setSeo(entryData.seo || {});
         if (entryData.scheduledAt) {
           // Format for datetime-local input (YYYY-MM-DDThh:mm)
           const date = new Date(entryData.scheduledAt);
@@ -89,6 +106,21 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
     setFormData(prev => ({ ...prev, [apiId]: value }));
   };
 
+  const handleDuplicate = async () => {
+    setDuplicating(true);
+    try {
+      const res = await fetch(`/api/content/entries/${typeApiId}/${id}/duplicate`, { method: 'POST' });
+      if (!res.ok) throw new Error(await res.text());
+      const copy = await res.json();
+      toast.success(`Duplicated as “${copy.slug}”`);
+      router.push(`/dashboard/content/${typeApiId}/${copy.id}`);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setDuplicating(false);
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!slug) {
@@ -106,6 +138,8 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
     const payload = {
       slug,
       status,
+      locale,
+      seo,
       data: formData,
       scheduledAt: status === 'scheduled' ? new Date(scheduledAt).toISOString() : null,
     };
@@ -143,14 +177,14 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
     <div className="flex gap-6 h-[calc(100vh-100px)] w-full">
       {/* LEFT: Editor Form */}
       <form className="flex-1 space-y-6 overflow-y-auto custom-scrollbar pr-2" onSubmit={e => handleSave(e)}>
-        <div className="flex items-center justify-between sticky top-0 bg-[#0a0a0a] z-10 pb-4 pt-2">
+        <div className="flex items-center justify-between sticky top-0 bg-background z-10 pb-4 pt-2">
           <div className="flex items-center gap-4">
             <Button type="button" variant="ghost" size="icon" onClick={() => router.push(`/dashboard/content/${typeApiId}`)}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-white tracking-tight">
+                <h1 className="text-2xl font-bold text-foreground tracking-tight">
                   {isNew ? `Create ${type.name}` : `Edit ${type.name}`}
                 </h1>
                 {!isNew && (
@@ -165,8 +199,9 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
           </div>
           <div className="flex items-center gap-3">
             {!isNew && (
-              <Button type="button" variant="outline" size="sm" className="gap-2">
-                <Eye className="h-4 w-4" /> Preview
+              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={handleDuplicate} disabled={duplicating}>
+                {duplicating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Copy className="h-4 w-4" />}
+                Duplicate
               </Button>
             )}
             <Button type="submit" variant="secondary" disabled={saving} className="bg-brand text-brand-foreground hover:bg-brand/90 gap-2">
@@ -219,12 +254,60 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                         className="w-full min-h-[200px] rounded-md border border-input bg-surface px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                       />
                     ) : field.type === 'json' ? (
-                      <textarea 
-                        id={field.apiId} 
+                      <textarea
+                        id={field.apiId}
                         required={field.required}
                         value={typeof formData[field.apiId] === 'object' ? JSON.stringify(formData[field.apiId], null, 2) : (formData[field.apiId] || '')}
                         onChange={e => handleFieldChange(field.apiId, e.target.value)}
                         className="w-full min-h-[150px] font-mono rounded-md border border-input bg-surface px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      />
+                    ) : field.type === 'reference' ? (
+                      <ReferencePicker
+                        value={formData[field.apiId]}
+                        onChange={v => handleFieldChange(field.apiId, v)}
+                        config={field.config}
+                        multiple={field.config?.multiple}
+                        excludeId={isNew ? undefined : id}
+                      />
+                    ) : field.type === 'media' ? (
+                      <MediaPicker
+                        value={formData[field.apiId]}
+                        onChange={v => handleFieldChange(field.apiId, v)}
+                        multiple={field.config?.multiple}
+                      />
+                    ) : field.type === 'select' ? (
+                      <select
+                        id={field.apiId}
+                        required={field.required}
+                        value={formData[field.apiId] || ''}
+                        onChange={e => handleFieldChange(field.apiId, e.target.value)}
+                        className="flex h-9 w-full max-w-sm rounded-md border border-border-strong bg-surface px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        <option value="">Select...</option>
+                        {(field.config?.options ?? []).map((opt: any) => {
+                          // Options may be plain strings or { value, label } objects.
+                          const value = typeof opt === 'string' ? opt : opt.value;
+                          const label = typeof opt === 'string' ? opt : (opt.label ?? opt.value);
+                          return <option key={value} value={value}>{label}</option>;
+                        })}
+                      </select>
+                    ) : field.type === 'date' || field.type === 'datetime' ? (
+                      <Input
+                        id={field.apiId}
+                        type={field.type === 'date' ? 'date' : 'datetime-local'}
+                        required={field.required}
+                        // Stored as ISO; both inputs need a trimmed local-ish value.
+                        value={(formData[field.apiId] || '').slice(0, field.type === 'date' ? 10 : 16)}
+                        onChange={e => handleFieldChange(field.apiId, e.target.value)}
+                        className="bg-surface border-border-strong max-w-xs"
+                      />
+                    ) : field.type === 'slug' ? (
+                      <Input
+                        id={field.apiId}
+                        required={field.required}
+                        value={formData[field.apiId] || ''}
+                        onChange={e => handleFieldChange(field.apiId, e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'))}
+                        className="bg-surface border-border-strong font-mono text-sm max-w-sm"
                       />
                     ) : (
                       <Input 
@@ -253,7 +336,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
           {/* Sidebar */}
           <div className="space-y-6">
             <div className="p-6 rounded-xl border border-border bg-surface-2/30 space-y-4">
-              <h3 className="font-semibold text-white">Entry Metadata</h3>
+              <h3 className="font-semibold text-foreground">Entry Metadata</h3>
               
               <div className="space-y-2">
                 <Label htmlFor="status" className="text-sm font-medium text-neutral-200">Status</Label>
@@ -284,10 +367,25 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                 </div>
               )}
 
+              <div className="space-y-2">
+                <Label htmlFor="locale" className="text-sm font-medium text-neutral-200">Language</Label>
+                <select
+                  id="locale"
+                  value={locale}
+                  onChange={e => setLocale(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-border-strong bg-surface px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  {LOCALES.map(l => (
+                    <option key={l.value} value={l.value}>{l.label}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-neutral-500">The same slug can exist once per language.</p>
+              </div>
+
               <div className="space-y-2 pt-2 border-t border-border/50">
                 <Label htmlFor="slug" className="text-sm font-medium text-neutral-200">Slug *</Label>
-                <Input 
-                  id="slug" 
+                <Input
+                  id="slug"
                   required
                   value={slug}
                   onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'))}
@@ -297,6 +395,8 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                 <p className="text-xs text-neutral-500">The URL-friendly identifier for this entry.</p>
               </div>
             </div>
+
+            <SeoPanel value={seo} onChange={setSeo} slug={slug} />
           </div>
         </div>
       </form>

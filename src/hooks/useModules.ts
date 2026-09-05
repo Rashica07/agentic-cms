@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 import { useUIStore } from '@/store/useStore';
-import { MODULE_KEYS, type ModuleKey } from '@kiq/novus-pulse';
+import { MODULE_KEYS, type ModuleKey } from '@rashica07/novus-pulse';
 
 export { MODULE_KEYS };
 export type { ModuleKey };

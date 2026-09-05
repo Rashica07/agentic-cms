@@ -14,7 +14,7 @@ export default function BillingSettingsPage() {
         </div>
         <CardHeader className="pb-2">
           <p className="text-xs uppercase tracking-wider text-brand/80 font-bold mb-1">Current plan</p>
-          <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
+          <CardTitle className="text-3xl font-bold text-foreground flex items-center gap-3">
             Shopify Advanced
             <span className="flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 px-3 py-1 text-xs font-semibold text-green-400">
               <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" /> Active
@@ -25,15 +25,15 @@ export default function BillingSettingsPage() {
           <div className="grid sm:grid-cols-3 gap-6">
             <div>
               <p className="text-sm text-neutral-400 mb-1">Monthly billing amount</p>
-              <p className="text-lg font-semibold text-white">€299.00 / month</p>
+              <p className="text-lg font-semibold text-foreground">€299.00 / month</p>
             </div>
             <div>
               <p className="text-sm text-neutral-400 mb-1">Next billing date</p>
-              <p className="text-lg font-semibold text-white">August 15, 2026</p>
+              <p className="text-lg font-semibold text-foreground">August 15, 2026</p>
             </div>
             <div>
               <p className="text-sm text-neutral-400 mb-1">Staff accounts</p>
-              <p className="text-lg font-semibold text-white">5 of 15 used</p>
+              <p className="text-lg font-semibold text-foreground">5 of 15 used</p>
             </div>
           </div>
           
@@ -55,7 +55,7 @@ export default function BillingSettingsPage() {
               <span className="text-blue-600 font-bold italic text-lg">VISA</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Visa ending in 4242</p>
+              <p className="text-sm font-semibold text-foreground">Visa ending in 4242</p>
               <p className="text-xs text-neutral-400">Expires 12/28</p>
             </div>
           </div>
@@ -86,9 +86,9 @@ export default function BillingSettingsPage() {
                 { date: 'May 15, 2026', desc: 'Shopify Advanced Plan (Monthly)', amt: '€299.00' },
               ].map((inv, i) => (
                 <tr key={i} className="hover:bg-surface-2/30">
-                  <td className="px-6 py-4 text-white">{inv.date}</td>
+                  <td className="px-6 py-4 text-foreground">{inv.date}</td>
                   <td className="px-6 py-4 text-neutral-300">{inv.desc}</td>
-                  <td className="px-6 py-4 font-medium text-white">{inv.amt}</td>
+                  <td className="px-6 py-4 font-medium text-foreground">{inv.amt}</td>
                   <td className="px-6 py-4 text-right">
                     <Button variant="ghost" size="sm" className="text-brand hover:bg-brand/10 h-8 w-8 p-0">
                       <Download className="h-4 w-4" />

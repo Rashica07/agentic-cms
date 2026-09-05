@@ -1,5 +1,6 @@
 import type { SiteSchema } from './types';
 import { kiqaDevSchema } from './kiqa-dev';
+import { torreGroupSchema } from './torre-group';
 
 export type { SiteSchema, SiteBlockTypeDef } from './types';
 export { createSiteBlock, siteBlockName } from './types';
@@ -12,6 +13,7 @@ export { createSiteBlock, siteBlockName } from './types';
  */
 const SITE_SCHEMAS_BY_TENANT_SLUG: Record<string, SiteSchema> = {
   [kiqaDevSchema.tenantSlug]: kiqaDevSchema,
+  [torreGroupSchema.tenantSlug]: torreGroupSchema,
 };
 
 export function getSiteSchemaForTenant(tenantSlug?: string | null): SiteSchema | null {

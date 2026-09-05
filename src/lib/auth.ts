@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { NovusPulse } from '@kiq/novus-pulse';
+import { NovusPulse } from '@rashica07/novus-pulse';
 import { JWT } from 'next-auth/jwt';
 
 // Initialize a generic client for auth

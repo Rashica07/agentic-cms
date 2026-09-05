@@ -59,12 +59,12 @@ export default function NewPost() {
       <form onSubmit={onSubmit} id="post-form">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/dashboard/posts">
-            <Button variant="ghost" size="icon" type="button" className="text-neutral-400 hover:text-white">
+            <Button variant="ghost" size="icon" type="button" className="text-neutral-400 hover:text-foreground">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">Create New Post</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Create New Post</h1>
             <p className="text-sm text-neutral-400">Set up the metadata before designing the content.</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -88,7 +88,7 @@ export default function NewPost() {
                   placeholder="e.g. 5 Ways to Improve UX" 
                   value={title} 
                   onChange={handleTitleChange}
-                  className="bg-surface-2 border-border-strong text-white"
+                  className="bg-surface-2 border-border-strong text-foreground"
                 />
               </div>
 
@@ -101,7 +101,7 @@ export default function NewPost() {
                   <Input 
                     value={slug} 
                     onChange={e => setSlug(e.target.value)}
-                    className="rounded-l-none bg-surface-2 border-border-strong text-white"
+                    className="rounded-l-none bg-surface-2 border-border-strong text-foreground"
                   />
                 </div>
               </div>
@@ -109,7 +109,7 @@ export default function NewPost() {
               <div>
                 <label className="text-sm font-medium text-neutral-300 mb-1.5 block">Category</label>
                 <select 
-                  className="w-full h-10 rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="w-full h-10 rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand"
                   value={categoryId}
                   onChange={e => setCategoryId(e.target.value)}
                 >
@@ -122,7 +122,7 @@ export default function NewPost() {
 
               <div className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2/50 p-4">
                 <div>
-                  <h4 className="text-sm font-medium text-white">Publish Status</h4>
+                  <h4 className="text-sm font-medium text-foreground">Publish Status</h4>
                   <p className="text-[13px] text-neutral-400 mt-0.5">Make this post visible to the public.</p>
                 </div>
                 <Switch 

@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
+import { useTheme } from '@/hooks/useTheme';
 
 /**
  * Watches the session for a failed token refresh and forces a clean
@@ -24,6 +25,7 @@ function SessionGuard({ children }: { children: React.ReactNode }) {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -41,7 +43,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <SessionGuard>
         <QueryClientProvider client={queryClient}>
           {children}
-          <Toaster theme="dark" richColors position="top-right" />
+          <Toaster theme={theme} richColors position="top-right" />
         </QueryClientProvider>
       </SessionGuard>
     </SessionProvider>

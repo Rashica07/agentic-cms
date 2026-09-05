@@ -95,7 +95,7 @@ export default function AnalyticsPage() {
                 size="sm"
                 className={cn(
                   "text-sm px-5 py-1.5 rounded-lg font-medium transition-all",
-                  range === d ? "bg-white text-black shadow-sm" : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                  range === d ? "bg-white text-black shadow-sm" : "text-neutral-400 hover:text-foreground hover:bg-neutral-800"
                 )}
                 onClick={() => setRange(d)}
               >
@@ -241,7 +241,7 @@ export default function AnalyticsPage() {
                         return (
                           <div key={page.slug} className="space-y-2.5">
                             <div className="flex items-center justify-between text-sm">
-                              <span className="font-medium text-white truncate max-w-[70%]">/{page.slug}</span>
+                              <span className="font-medium text-foreground truncate max-w-[70%]">/{page.slug}</span>
                               <span className="text-neutral-400 font-mono text-xs">{formatNum(page.views)} views</span>
                             </div>
                             <div className="h-2.5 rounded-full bg-surface-2 border border-border overflow-hidden">
@@ -367,7 +367,7 @@ function StatCard({
           )}
         </div>
         <div className="mt-6">
-          <p className="text-3xl font-bold tracking-tight text-white">{value}</p>
+          <p className="text-3xl font-bold tracking-tight text-foreground">{value}</p>
           <div className="flex items-center gap-2 mt-1">
             <p className="text-sm font-medium text-neutral-400">{label}</p>
             <span className="text-neutral-600 font-mono text-[10px] uppercase tracking-wider">{hint}</span>
@@ -384,7 +384,7 @@ function CustomTooltip({ active, payload, label }: any) {
     return (
       <div className="bg-surface border border-border-strong rounded-xl p-4 shadow-xl">
         <p className="text-xs text-neutral-400 mb-2 font-medium uppercase tracking-wider">{date}</p>
-        <p className="text-lg font-bold text-white flex items-center gap-2">
+        <p className="text-lg font-bold text-foreground flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-brand shadow-[0_0_8px_rgba(255,140,0,0.5)]"></span>
           {formatNum(payload[0].value)} <span className="text-sm font-normal text-neutral-400">views</span>
         </p>

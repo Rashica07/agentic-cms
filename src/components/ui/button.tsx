@@ -38,11 +38,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       destructive:
         'bg-red-600 text-white hover:bg-red-500 shadow-[0_1px_2px_rgba(0,0,0,.4),inset_0_1px_0_rgba(255,255,255,.1)]',
       outline:
-        'border border-border bg-transparent hover:bg-surface-2 hover:text-white',
+        'border border-border bg-transparent hover:bg-surface-2 hover:text-foreground',
       secondary:
-        'bg-surface-2 text-white hover:bg-surface-2/80',
+        'bg-surface-2 text-foreground hover:bg-surface-2/80',
       ghost:
-        'hover:bg-surface-2 hover:text-white text-neutral-400',
+        'hover:bg-surface-2 hover:text-foreground text-neutral-400',
       link: 'text-brand underline-offset-4 hover:underline active:scale-100',
     }[variant];
     

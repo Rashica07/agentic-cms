@@ -59,7 +59,7 @@ export default function PostsPage() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
             <Newspaper className="h-6 w-6 text-brand" /> Posts
           </h1>
           <p className="text-neutral-400 text-sm mt-1">Manage your blog articles and news updates.</p>
@@ -137,7 +137,7 @@ export default function PostsPage() {
                   <tr key={post.id} className="hover:bg-surface-2/30 transition-colors group">
                     <td className="px-4 py-3">
                       <div>
-                        <Link href={`/dashboard/posts/${post.id}`} className="font-semibold text-white hover:text-brand transition-colors">
+                        <Link href={`/dashboard/posts/${post.id}`} className="font-semibold text-foreground hover:text-brand transition-colors">
                           {post.title}
                         </Link>
                         <div className="text-xs text-neutral-500 mt-0.5 truncate max-w-[200px]">/{post.slug}</div>
@@ -173,7 +173,7 @@ export default function PostsPage() {
                           </Button>
                         </Link>
                         <Link href={`/dashboard/posts/${post.id}`}>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-white" title="Settings">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-foreground" title="Settings">
                             <Edit2 className="h-4 w-4" />
                           </Button>
                         </Link>
@@ -188,7 +188,7 @@ export default function PostsPage() {
                 <tr>
                   <td colSpan={5} className="px-4 py-16 text-center">
                     <Newspaper className="mx-auto h-12 w-12 text-neutral-600 mb-4" />
-                    <h3 className="mb-2 text-lg font-medium text-white">No posts found</h3>
+                    <h3 className="mb-2 text-lg font-medium text-foreground">No posts found</h3>
                     <p className="mb-6 text-sm text-neutral-400 max-w-sm mx-auto">
                       Get started by creating your first post.
                     </p>

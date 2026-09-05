@@ -42,7 +42,7 @@ export default function ContentLibraryPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Content Library</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Content Library</h1>
           <p className="text-neutral-400 mt-1">Manage all your dynamic content entries.</p>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function ContentLibraryPage() {
               <ArrowRight className="h-4 w-4 text-neutral-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
             </div>
             <div className="mt-4">
-              <h3 className="text-lg font-semibold text-white group-hover:text-brand transition-colors">{type.name}</h3>
+              <h3 className="text-lg font-semibold text-foreground group-hover:text-brand transition-colors">{type.name}</h3>
               <p className="text-sm text-neutral-400 mt-1 line-clamp-2">
                 {type.description || `Manage entries for ${type.name.toLowerCase()}`}
               </p>
@@ -80,7 +80,7 @@ export default function ContentLibraryPage() {
         {types.length === 0 && (
           <div className="col-span-full p-12 text-center border border-dashed border-border rounded-xl">
             <Database className="h-12 w-12 text-neutral-600 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-white mb-2">No Content Types found</h3>
+            <h3 className="text-lg font-medium text-foreground mb-2">No Content Types found</h3>
             <p className="text-neutral-400 mb-6 max-w-md mx-auto">
               Before you can create content, you need to define your content structure using the Schema Builder.
             </p>

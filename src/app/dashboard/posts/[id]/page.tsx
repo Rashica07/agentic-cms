@@ -94,12 +94,12 @@ export default function EditPost() {
       <form onSubmit={onSubmit} id="post-form">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/dashboard/posts">
-            <Button variant="ghost" size="icon" type="button" className="text-neutral-400 hover:text-white">
+            <Button variant="ghost" size="icon" type="button" className="text-neutral-400 hover:text-foreground">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">{page.title}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">{page.title}</h1>
             <p className="text-sm text-neutral-400">Manage post metadata and categories.</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -107,7 +107,7 @@ export default function EditPost() {
               <Trash2 className="h-4 w-4" />
             </Button>
             <Link href={`/dashboard/builder/editor?page=${id}`}>
-              <Button type="button" variant="outline" className="border-border-strong bg-surface-2 text-white hover:bg-surface-2/80 gap-2">
+              <Button type="button" variant="outline" className="border-border-strong bg-surface-2 text-foreground hover:bg-surface-2/80 gap-2">
                 <Paintbrush className="h-4 w-4" /> Visual Editor
               </Button>
             </Link>
@@ -125,7 +125,7 @@ export default function EditPost() {
                 <Input 
                   value={title} 
                   onChange={handleTitleChange}
-                  className="bg-surface-2 border-border-strong text-white"
+                  className="bg-surface-2 border-border-strong text-foreground"
                 />
               </div>
 
@@ -138,7 +138,7 @@ export default function EditPost() {
                   <Input 
                     value={slug} 
                     onChange={e => setSlug(e.target.value)}
-                    className="rounded-l-none bg-surface-2 border-border-strong text-white"
+                    className="rounded-l-none bg-surface-2 border-border-strong text-foreground"
                   />
                 </div>
               </div>
@@ -146,7 +146,7 @@ export default function EditPost() {
               <div>
                 <label className="text-sm font-medium text-neutral-300 mb-1.5 block">Category</label>
                 <select 
-                  className="w-full h-10 rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="w-full h-10 rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand"
                   value={categoryId}
                   onChange={e => setCategoryId(e.target.value)}
                 >
@@ -159,7 +159,7 @@ export default function EditPost() {
 
               <div className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2/50 p-4">
                 <div>
-                  <h4 className="text-sm font-medium text-white">Publish Status</h4>
+                  <h4 className="text-sm font-medium text-foreground">Publish Status</h4>
                   <p className="text-[13px] text-neutral-400 mt-0.5">Make this post visible to the public.</p>
                 </div>
                 <Switch 
@@ -175,7 +175,7 @@ export default function EditPost() {
 
       <div className="mt-8 p-6 rounded-xl border border-border-strong bg-gradient-to-br from-brand/5 to-transparent flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-white mb-1">Design this post</h3>
+          <h3 className="text-lg font-bold text-foreground mb-1">Design this post</h3>
           <p className="text-sm text-neutral-400 max-w-md">
             The post content is managed through the Visual Editor. You can add text blocks, images, headers, and completely customize the layout.
           </p>

@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { createPulseClient } from '@/lib/novus-pulse-client';
-import { usePages, useUpdatePage } from '@/hooks/usePages';
+import { usePages, useUpdatePage, useCreatePage, useDeletePage } from '@/hooks/usePages';
 import { useHistory } from '@/lib/use-history';
 import { PlanGate } from '@/components/plan-gate';
 import { Button } from '@/components/ui/button';
@@ -38,6 +38,7 @@ import {
   Link2,
   Undo2,
   Redo2,
+  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -45,6 +46,7 @@ import { BLOCK_TYPES, FIELD_SCHEMA, createBlock, type Block, type BlockType, typ
 import { BlockRenderer } from '@/components/builder/block-renderer';
 import { SortableBlockRow } from '@/components/builder/sortable-block-row';
 import { getSiteSchemaForTenant, createSiteBlock, siteBlockName, type SiteSchema } from '@/lib/site-schemas';
+import { useUIStore } from '@/store/useStore';
 
 const DEFAULT_THEME = {
   colors: { primary: '#ff8c00', background: '#0a0a0a', surface: '#121212', accent: '#ff6b00' },
@@ -83,6 +85,25 @@ function VisualEditor() {
 
   const { data: pages, isLoading: pagesLoading } = usePages();
   const { mutateAsync: updatePage } = useUpdatePage();
+  const { mutateAsync: createPage, isPending: creatingPage } = useCreatePage();
+  const { mutateAsync: deletePage } = useDeletePage();
+
+  /** Create a blank page and jump straight into editing it. */
+  const handleCreatePage = async (title: string, slug: string) => {
+    const created = await createPage({ title, slug, type: 'page', content: { blocks: [] }, published: false });
+    toast.success(`Page "${title}" created`);
+    selectPage((created as { id: string }).id);
+  };
+
+  /** Delete a page, then fall back to another one so the editor never lands empty-handed. */
+  const handleDeletePage = async (id: string) => {
+    await deletePage(id);
+    toast.success('Page deleted');
+    const remaining = (pages ?? []).filter((p) => p.id !== id);
+    const next = remaining.find((p) => p.slug === 'home') ?? remaining[0];
+    setActivePageId(next?.id ?? null);
+    router.replace(next ? `/dashboard/builder/editor?page=${next.id}` : '/dashboard/builder/editor');
+  };
 
   const [activePageId, setActivePageId] = useState<string | null>(searchParams.get('page'));
   const [theme, setTheme] = useState(DEFAULT_THEME);
@@ -138,7 +159,14 @@ function VisualEditor() {
     router.replace(`/dashboard/builder/editor?page=${id}`);
   };
 
-  const siteSchema = getSiteSchemaForTenant(session?.user?.tenantSlug);
+  // Resolve the linked-site schema from the ACTIVE PROJECT, not the logged-in
+  // user. A super_admin editing another tenant's site (e.g. selecting torre-ks
+  // while signed in as admin-workspace) loads that tenant's content via
+  // activeTenantId — the schema, labels and fields must key off the same tenant
+  // or the editor falls back to the generic registry and shows raw type names
+  // with "no editable content". Normal users' activeTenantSlug equals their own.
+  const activeTenantSlug = useUIStore((s) => s.activeTenantSlug);
+  const siteSchema = getSiteSchemaForTenant(activeTenantSlug ?? session?.user?.tenantSlug);
 
   return (
     <PlanGate feature="themes">
@@ -150,6 +178,9 @@ function VisualEditor() {
             pages={pages ?? []}
             pagesLoading={pagesLoading}
             onSelectPage={selectPage}
+            onCreatePage={handleCreatePage}
+            onDeletePage={handleDeletePage}
+            creatingPage={creatingPage}
             theme={theme}
             setTheme={setTheme}
             products={products}
@@ -158,8 +189,21 @@ function VisualEditor() {
             siteSchema={siteSchema}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center text-neutral-500 text-sm">
-            {pagesLoading ? 'Loading pages…' : 'No pages yet — create one first.'}
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-neutral-500 text-sm">
+            {pagesLoading ? (
+              'Loading pages…'
+            ) : (
+              <>
+                <p>No pages yet — create your first one.</p>
+                <Button
+                  className="gap-2"
+                  disabled={creatingPage}
+                  onClick={() => handleCreatePage('Home', 'home')}
+                >
+                  <Plus className="h-4 w-4" /> Create home page
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -183,6 +227,9 @@ function PageWorkspace({
   pages,
   pagesLoading,
   onSelectPage,
+  onCreatePage,
+  onDeletePage,
+  creatingPage,
   theme,
   setTheme,
   products,
@@ -194,6 +241,9 @@ function PageWorkspace({
   pages: NonNullable<ReturnType<typeof usePages>['data']>;
   pagesLoading: boolean;
   onSelectPage: (id: string) => void;
+  onCreatePage: (title: string, slug: string) => Promise<void>;
+  onDeletePage: (id: string) => Promise<void>;
+  creatingPage: boolean;
   theme: typeof DEFAULT_THEME;
   setTheme: React.Dispatch<React.SetStateAction<typeof DEFAULT_THEME>>;
   products: { id: string; title: string; price?: number; imageUrl?: string }[];
@@ -227,6 +277,7 @@ function PageWorkspace({
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const [newPageOpen, setNewPageOpen] = useState(false);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
 
@@ -357,6 +408,34 @@ function PageWorkspace({
               </option>
             ))}
           </select>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0 text-neutral-400 hover:text-white"
+            onClick={() => setNewPageOpen(true)}
+            title="New page"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0 text-neutral-400 hover:text-red-400 disabled:opacity-30"
+            onClick={() => {
+              // Never delete the last page — the editor would have nothing to show.
+              if (pages.length <= 1) {
+                toast.error("Can't delete the only page");
+                return;
+              }
+              if (window.confirm(`Delete page "${page.title}"? This cannot be undone.`)) {
+                onDeletePage(page.id);
+              }
+            }}
+            disabled={pages.length <= 1}
+            title="Delete page"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
           <div className="flex items-center gap-1 shrink-0">
             <Button
               variant="ghost"
@@ -553,8 +632,15 @@ function PageWorkspace({
                 <Link2 className="h-3 w-3" /> Linked to {siteSchema.siteName} · live after Publish
               </span>
             )}
-            <a href={siteSchema?.siteUrl ?? siteUrl} target="_blank" rel="noreferrer" className={cn('text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 transition-colors', !siteSchema && 'ml-auto')}>
-              Live Site <Eye className="h-3 w-3" />
+            {/* Falls back to Site Connection when no URL is known, rather than
+                rendering a dead link to a guessed host. */}
+            <a
+              href={siteSchema?.siteUrl ?? siteUrl ?? '/dashboard/settings/site'}
+              target={siteSchema?.siteUrl ?? siteUrl ? '_blank' : undefined}
+              rel="noreferrer"
+              className={cn('text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 transition-colors', !siteSchema && 'ml-auto')}
+            >
+              {siteSchema?.siteUrl ?? siteUrl ? 'Live Site' : 'Connect site'} <Eye className="h-3 w-3" />
             </a>
           </div>
 
@@ -580,7 +666,95 @@ function PageWorkspace({
             </div>
           </div>
         </div>
+        {newPageOpen && (
+          <NewPageModal
+            onClose={() => setNewPageOpen(false)}
+            creating={creatingPage}
+            existingSlugs={pages.map((p) => p.slug)}
+            onCreate={async (title, slug) => {
+              await onCreatePage(title, slug);
+              setNewPageOpen(false);
+            }}
+          />
+        )}
     </>
+  );
+}
+
+/** Small modal to name + slug a new page. Slugifies the title as you type. */
+function NewPageModal({
+  onClose,
+  onCreate,
+  creating,
+  existingSlugs,
+}: {
+  onClose: () => void;
+  onCreate: (title: string, slug: string) => Promise<void>;
+  creating: boolean;
+  existingSlugs: string[];
+}) {
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
+  const [slugEdited, setSlugEdited] = useState(false);
+
+  const slugify = (v: string) =>
+    v.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  const effectiveSlug = slugEdited ? slugify(slug) : slugify(title);
+  const duplicate = existingSlugs.includes(effectiveSlug);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return toast.error('Title is required');
+    if (!effectiveSlug) return toast.error('Slug is required');
+    if (duplicate) return toast.error('A page with that slug already exists');
+    try {
+      await onCreate(title.trim(), effectiveSlug);
+    } catch (err: any) {
+      toast.error(err?.message || 'Could not create page');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[95] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <form onSubmit={submit} className="relative w-full max-w-md space-y-4 rounded-xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl">
+        <h3 className="font-semibold text-white">New page</h3>
+        <div className="space-y-1.5">
+          <Label htmlFor="np-title">Title</Label>
+          <Input
+            id="np-title"
+            autoFocus
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="About"
+            className="bg-neutral-900"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="np-slug">Slug</Label>
+          <Input
+            id="np-slug"
+            value={slugEdited ? slug : effectiveSlug}
+            onChange={(e) => {
+              setSlugEdited(true);
+              setSlug(e.target.value);
+            }}
+            placeholder="about"
+            className="bg-neutral-900"
+          />
+          <p className="text-[11px] text-neutral-500">
+            URL: /{effectiveSlug || '…'}{duplicate && <span className="text-red-400"> · already exists</span>}
+          </p>
+        </div>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+          <Button type="submit" disabled={creating || duplicate} className="gap-2">
+            {creating && <Plus className="h-4 w-4 animate-spin" />} Create page
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
 

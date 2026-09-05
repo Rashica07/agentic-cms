@@ -138,7 +138,7 @@ export default function FormsInboxPage() {
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <p className={cn("text-sm truncate pr-2 transition-colors", !sub.read ? "font-bold text-white" : "font-semibold text-neutral-300", isActive && "text-brand")}>
+                              <p className={cn("text-sm truncate pr-2 transition-colors", !sub.read ? "font-bold text-foreground" : "font-semibold text-neutral-300", isActive && "text-brand")}>
                                 {sub.data.name || sub.data.email || 'Anonymous Submission'}
                               </p>
                               <span className={cn("text-[10px] shrink-0 whitespace-nowrap", !sub.read ? "text-brand font-medium" : "text-neutral-500")}>
@@ -194,7 +194,7 @@ export default function FormsInboxPage() {
                             {new Date(activeSub.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
                           </span>
                         </div>
-                        <CardTitle className="text-2xl font-bold tracking-tight text-white mb-2">
+                        <CardTitle className="text-2xl font-bold tracking-tight text-foreground mb-2">
                           {activeSub.data.subject || `New submission from ${activeSub.data.name || 'Anonymous'}`}
                         </CardTitle>
                         <CardDescription className="text-base flex items-center gap-2">

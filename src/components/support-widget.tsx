@@ -80,7 +80,7 @@ export function SupportWidget() {
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Novus Assistant</p>
+              <p className="text-sm font-semibold text-foreground">Novus Assistant</p>
               <p className="text-[10px] text-neutral-500 flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-500 inline-block" />
                 Online

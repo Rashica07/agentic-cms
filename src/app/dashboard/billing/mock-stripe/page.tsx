@@ -75,7 +75,7 @@ export default function MockStripePage() {
           <div className="mx-auto w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6">
             <CheckCircle2 className="h-10 w-10" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Payment Received!</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Payment Received!</h1>
           <p className="text-neutral-400 max-w-md mx-auto">
             Your payment is currently pending admin approval. You will receive an email once your workspace is fully activated.
           </p>
@@ -91,15 +91,15 @@ export default function MockStripePage() {
     <div className="min-h-screen bg-neutral-950 flex flex-col items-center pt-20 p-4">
       {/* Stripe-like Header */}
       <div className="w-full max-w-3xl flex justify-between items-center mb-8">
-        <div className="flex items-center gap-2 text-white">
+        <div className="flex items-center gap-2 text-foreground">
           <div className="h-8 w-8 bg-brand rounded-lg flex items-center justify-center shadow-lg shadow-brand/20">
-            <ShieldCheck className="h-5 w-5 text-white" />
+            <ShieldCheck className="h-5 w-5 text-foreground" />
           </div>
           <span className="font-bold text-xl tracking-tight">Novus Pulse</span>
         </div>
         <div className="text-right">
           <p className="text-sm text-neutral-400">Total Due</p>
-          <p className="text-2xl font-bold text-white">${planDetails.price}.00</p>
+          <p className="text-2xl font-bold text-foreground">${planDetails.price}.00</p>
         </div>
       </div>
 
@@ -112,15 +112,15 @@ export default function MockStripePage() {
             <div className="space-y-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-white font-medium">{planDetails.name}</p>
+                  <p className="text-foreground font-medium">{planDetails.name}</p>
                   <p className="text-sm text-neutral-500">Billed monthly</p>
                 </div>
-                <p className="text-white font-medium">${planDetails.price}.00</p>
+                <p className="text-foreground font-medium">${planDetails.price}.00</p>
               </div>
               <div className="h-px bg-neutral-800 w-full" />
               <div className="flex justify-between items-start font-bold">
-                <p className="text-white">Total</p>
-                <p className="text-white">${planDetails.price}.00</p>
+                <p className="text-foreground">Total</p>
+                <p className="text-foreground">${planDetails.price}.00</p>
               </div>
             </div>
           </div>

@@ -74,7 +74,7 @@ export function SortableBlockRow({
             {...attributes}
             {...listeners}
             onClick={(e) => e.stopPropagation()}
-            className="p-1 -ml-1 rounded text-neutral-600 hover:text-white cursor-grab active:cursor-grabbing touch-none"
+            className="p-1 -ml-1 rounded text-neutral-600 hover:text-foreground cursor-grab active:cursor-grabbing touch-none"
             aria-label={`Reorder ${label}`}
           >
             <GripVertical className="h-4 w-4 shrink-0" />
@@ -87,7 +87,7 @@ export function SortableBlockRow({
               e.stopPropagation();
               onToggleHidden();
             }}
-            className="p-1 rounded text-neutral-500 hover:text-white"
+            className="p-1 rounded text-neutral-500 hover:text-foreground"
             title={block.hidden ? 'Hidden — click to show' : 'Visible — click to hide'}
           >
             {block.hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
@@ -98,7 +98,7 @@ export function SortableBlockRow({
               onMoveUp();
             }}
             disabled={index === 0}
-            className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-30"
+            className="p-1 rounded text-neutral-500 hover:text-foreground disabled:opacity-30"
           >
             <ChevronUp className="h-3.5 w-3.5" />
           </button>
@@ -108,7 +108,7 @@ export function SortableBlockRow({
               onMoveDown();
             }}
             disabled={isLast}
-            className="p-1 rounded text-neutral-500 hover:text-white disabled:opacity-30"
+            className="p-1 rounded text-neutral-500 hover:text-foreground disabled:opacity-30"
           >
             <ChevronDown className="h-3.5 w-3.5" />
           </button>

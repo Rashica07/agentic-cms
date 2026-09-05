@@ -60,7 +60,7 @@ export default function GeneralSettingsPage() {
             <Input 
               value={values.storeName}
               onChange={(e) => updateValue('storeName', e.target.value)}
-              className="max-w-md bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+              className="max-w-md bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
             />
           </div>
           
@@ -70,13 +70,13 @@ export default function GeneralSettingsPage() {
               <Input 
                 value={values.email}
                 onChange={(e) => updateValue('email', e.target.value)}
-                className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
               />
               <p className="text-xs text-neutral-500">We'll use this address if we need to contact you about your account.</p>
             </div>
             <div className="space-y-2">
               <Label className="text-sm font-medium text-neutral-300">Store industry</Label>
-              <select className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
+              <select className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
                 <option>Fashion & Apparel</option>
                 <option>Electronics</option>
                 <option>Home & Garden</option>
@@ -91,7 +91,7 @@ export default function GeneralSettingsPage() {
               <select 
                 value={values.currency}
                 onChange={(e) => updateValue('currency', e.target.value)}
-                className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
+                className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
               >
                 <option value="USD">US Dollar (USD)</option>
                 <option value="EUR">Euro (EUR)</option>
@@ -103,7 +103,7 @@ export default function GeneralSettingsPage() {
               <select 
                 value={values.timezone}
                 onChange={(e) => updateValue('timezone', e.target.value)}
-                className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
+                className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
               >
                 <option value="UTC">UTC</option>
                 <option value="EST">Eastern Time (US & Canada)</option>
@@ -127,7 +127,7 @@ export default function GeneralSettingsPage() {
               <select 
                 value={values.country}
                 onChange={(e) => updateValue('country', e.target.value)}
-                className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
+                className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
               >
                 <option value="US">United States</option>
                 <option value="GB">United Kingdom</option>
@@ -140,7 +140,7 @@ export default function GeneralSettingsPage() {
               <Input 
                 value={values.phone}
                 onChange={(e) => updateValue('phone', e.target.value)}
-                className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
               />
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function GeneralSettingsPage() {
             <Input 
               value={values.street}
               onChange={(e) => updateValue('street', e.target.value)}
-              className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+              className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
             />
           </div>
           
@@ -160,7 +160,7 @@ export default function GeneralSettingsPage() {
               <Input 
                 value={values.city}
                 onChange={(e) => updateValue('city', e.target.value)}
-                className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
               />
             </div>
             <div className="space-y-2">
@@ -168,7 +168,7 @@ export default function GeneralSettingsPage() {
               <Input 
                 value={values.state}
                 onChange={(e) => updateValue('state', e.target.value)}
-                className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
               />
             </div>
             <div className="space-y-2">
@@ -176,7 +176,7 @@ export default function GeneralSettingsPage() {
               <Input 
                 value={values.zip}
                 onChange={(e) => updateValue('zip', e.target.value)}
-                className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
               />
             </div>
           </div>
@@ -190,7 +190,7 @@ export default function GeneralSettingsPage() {
         </CardHeader>
         <CardContent className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="text-sm font-medium text-white mb-1">Deactivate store</h4>
+            <h4 className="text-sm font-medium text-foreground mb-1">Deactivate store</h4>
             <p className="text-xs text-neutral-400 max-w-sm">If you no longer want to operate this store, you can pause or deactivate it.</p>
           </div>
           <Button variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300">
@@ -202,12 +202,12 @@ export default function GeneralSettingsPage() {
       {/* ─── FLOATING SAVE BAR ────────────────────────────────────────────── */}
       {hasUnsavedChanges && (
         <div className="fixed bottom-6 left-1/2 md:left-[calc(50%+110px)] -translate-x-1/2 z-50 w-full max-w-2xl px-4 anim-fade-up">
-          <div className="bg-neutral-900 flex items-center justify-between rounded-xl p-3 pl-6 pr-3 shadow-2xl border border-neutral-700">
-            <span className="text-sm font-medium text-white flex items-center gap-2">
+          <div className="bg-card flex items-center justify-between rounded-xl p-3 pl-6 pr-3 shadow-2xl border border-border">
+            <span className="text-sm font-medium text-foreground flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-brand animate-pulse" /> Unsaved changes
             </span>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="hover:bg-neutral-800 text-neutral-300" onClick={handleDiscard}>
+              <Button variant="ghost" size="sm" className="hover:bg-muted text-muted-foreground" onClick={handleDiscard}>
                 Discard
               </Button>
               <Button size="sm" className="gap-2 bg-brand text-black hover:bg-brand-hover" onClick={handleSave} disabled={saving}>

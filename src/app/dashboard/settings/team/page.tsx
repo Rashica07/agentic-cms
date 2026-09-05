@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Plus, ShieldCheck, UserCog, Send, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { PermissionMatrix } from '@/components/settings/permission-matrix';
 
 export default function TeamSettingsPage() {
   const { data: session } = useSession();
@@ -86,22 +87,22 @@ export default function TeamSettingsPage() {
           <div className="p-6 border-b border-border/50 bg-surface-2/30">
             <form onSubmit={handleInvite} className="flex gap-4 items-end">
               <div className="flex-1 space-y-2">
-                <label className="text-sm font-medium text-white">Email Address</label>
+                <label className="text-sm font-medium text-foreground">Email Address</label>
                 <input
                   type="email"
                   required
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder="colleague@example.com"
-                  className="w-full bg-surface border border-border rounded-md px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="w-full bg-surface border border-border rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-brand"
                 />
               </div>
               <div className="w-48 space-y-2">
-                <label className="text-sm font-medium text-white">Role</label>
+                <label className="text-sm font-medium text-foreground">Role</label>
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value)}
-                  className="w-full bg-surface border border-border rounded-md px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-brand"
+                  className="w-full bg-surface border border-border rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-brand"
                 >
                   <option value="admin">Admin</option>
                   <option value="editor">Editor</option>
@@ -129,7 +130,7 @@ export default function TeamSettingsPage() {
               {members.map((member, i) => (
                 <tr key={member.id || i} className="hover:bg-surface-2/30">
                   <td className="px-6 py-4">
-                    <p className="font-semibold text-white">{member.firstName} {member.lastName}</p>
+                    <p className="font-semibold text-foreground">{member.firstName} {member.lastName}</p>
                     <p className="text-xs text-neutral-500 mt-0.5">{member.email}</p>
                   </td>
                   <td className="px-6 py-4">
@@ -169,7 +170,7 @@ export default function TeamSettingsPage() {
               <tbody className="divide-y divide-border/50">
                 {invites.map((invite) => (
                   <tr key={invite.id} className="hover:bg-surface-2/30">
-                    <td className="px-6 py-4 font-medium text-white">{invite.email}</td>
+                    <td className="px-6 py-4 font-medium text-foreground">{invite.email}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-neutral-800 text-neutral-300">
                         {invite.role}
@@ -207,7 +208,7 @@ export default function TeamSettingsPage() {
                 <UserCog className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Admin</h4>
+                <h4 className="text-sm font-semibold text-foreground">Admin</h4>
                 <p className="text-xs text-neutral-400 mt-0.5">Full access to content, schema, settings, and team management.</p>
               </div>
             </div>
@@ -219,7 +220,7 @@ export default function TeamSettingsPage() {
                 <UserCog className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Editor</h4>
+                <h4 className="text-sm font-semibold text-foreground">Editor</h4>
                 <p className="text-xs text-neutral-400 mt-0.5">Can create, edit, delete, and publish any content entries and photos.</p>
               </div>
             </div>
@@ -231,7 +232,7 @@ export default function TeamSettingsPage() {
                 <UserCog className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Author</h4>
+                <h4 className="text-sm font-semibold text-foreground">Author</h4>
                 <p className="text-xs text-neutral-400 mt-0.5">Can create content, but can only edit/delete their own content. Cannot publish.</p>
               </div>
             </div>
@@ -243,13 +244,16 @@ export default function TeamSettingsPage() {
                 <UserCog className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Viewer</h4>
+                <h4 className="text-sm font-semibold text-foreground">Viewer</h4>
                 <p className="text-xs text-neutral-400 mt-0.5">Can only view content and settings. Cannot make any changes.</p>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Per-content-type overrides on top of the role defaults above */}
+      <PermissionMatrix />
     </div>
   );
 }

@@ -77,7 +77,7 @@ export function TenantRowActions({ tenantId, status, slug, name }: { tenantId: s
           variant="outline"
           size="sm"
           onClick={handleOpenWebsite}
-          className="text-neutral-400 hover:text-white hover:bg-white/10 border-white/20"
+          className="text-neutral-400 hover:text-foreground hover:bg-white/10 border-white/20"
           title="Open Live Website"
         >
           <ExternalLink className="w-4 h-4 mr-1" />
@@ -116,16 +116,16 @@ export function TenantRowActions({ tenantId, status, slug, name }: { tenantId: s
 
       {isApproveModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-xl p-6 shadow-xl space-y-6">
+          <div className="w-full max-w-md bg-card border border-border rounded-xl p-6 shadow-xl space-y-6">
             <div>
-              <h3 className="text-xl font-bold text-white">Approve Tenant</h3>
-              <p className="text-sm text-neutral-400 mt-1">
+              <h3 className="text-xl font-bold text-foreground">Approve Tenant</h3>
+              <p className="text-sm text-muted-foreground mt-1">
                 Enter the tenant owner's email address. An account will be created if they don't exist.
               </p>
             </div>
             <form onSubmit={handleApprove} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="owner-email" className="text-xs font-semibold text-neutral-300">
+                <Label htmlFor="owner-email" className="text-xs font-semibold text-muted-foreground">
                   Owner Email
                 </Label>
                 <Input
@@ -135,7 +135,6 @@ export function TenantRowActions({ tenantId, status, slug, name }: { tenantId: s
                   value={ownerEmail}
                   onChange={(e) => setOwnerEmail(e.target.value)}
                   required
-                  className="bg-neutral-950 border-neutral-800 text-white"
                 />
               </div>
 
@@ -145,7 +144,7 @@ export function TenantRowActions({ tenantId, status, slug, name }: { tenantId: s
                   id="cash-payment"
                   checked={paidInCash}
                   onChange={(e) => setPaidInCash(e.target.checked)}
-                  className="w-4 h-4 text-green-500 bg-neutral-900 border-neutral-700 rounded focus:ring-green-500"
+                  className="w-4 h-4 text-green-500 bg-background border-border rounded focus:ring-green-500"
                 />
                 <Label htmlFor="cash-payment" className="text-sm font-medium text-green-400 cursor-pointer">
                   Confirm Payment Received (Cash/Manual)
@@ -158,7 +157,7 @@ export function TenantRowActions({ tenantId, status, slug, name }: { tenantId: s
                   variant="outline"
                   onClick={() => setIsApproveModalOpen(false)}
                   disabled={loading !== null}
-                  className="bg-transparent border-neutral-800 text-neutral-300 hover:bg-neutral-800"
+                  className="bg-transparent border-border text-muted-foreground hover:bg-muted"
                 >
                   Cancel
                 </Button>

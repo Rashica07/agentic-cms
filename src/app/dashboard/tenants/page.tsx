@@ -33,7 +33,7 @@ export default async function TenantsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Tenants</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Tenants</h1>
           <p className="text-neutral-400 mt-1">Manage all platform tenants and subscriptions.</p>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default async function TenantsPage() {
         {tenants.length === 0 ? (
           <div className="p-12 text-center">
             <Building2 className="h-12 w-12 text-neutral-600 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-white mb-2">No Tenants Found</h3>
+            <h3 className="text-lg font-medium text-foreground mb-2">No Tenants Found</h3>
             <p className="text-neutral-400">There are no tenants registered on the platform yet.</p>
           </div>
         ) : (
@@ -61,7 +61,7 @@ export default async function TenantsPage() {
                 {tenants.map((tenant) => (
                   <tr key={tenant.id} className="hover:bg-surface-2/30 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-white">{tenant.name}</div>
+                      <div className="font-medium text-foreground">{tenant.name}</div>
                       <div className="text-xs text-neutral-500 font-mono mt-1">{tenant.id}</div>
                     </td>
                     <td className="px-6 py-4 font-mono text-neutral-300">{tenant.slug}</td>

@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { useUIStore } from '@/store/useStore';
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email or Username is required'),
@@ -24,6 +25,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const resetTenant = useUIStore((s) => s.resetTenant);
 
   const {
     register,
@@ -44,11 +46,25 @@ function LoginForm() {
       });
 
       if (result?.error) {
+        // Map the backend's gate codes to the right screen.
+        if (result.error.startsWith('EMAIL_NOT_VERIFIED')) {
+          toast.error('Verify your email first', {
+            description: 'Check your inbox for the verification link, then log in.',
+          });
+          return;
+        }
+        if (result.error.startsWith('PENDING_APPROVAL')) {
+          router.push('/pending');
+          return;
+        }
         toast.error(result.error);
         return;
       }
 
-      toast.success('Logged in automatically!');
+      // A fresh login must never inherit the previous user's active tenant
+      // (the store is persisted in localStorage on this browser).
+      resetTenant();
+      toast.success('Welcome back!');
       router.push('/dashboard');
       router.refresh();
     } catch (error) {

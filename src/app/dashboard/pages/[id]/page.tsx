@@ -110,12 +110,12 @@ export default function EditPage() {
       {/* ─── HEADER ───────────────────────────────────────── */}
       <div className="flex items-center gap-4">
         <Link href="/dashboard/pages">
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-white">
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">{page.title}</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{page.title}</h1>
         </div>
         
         <div className="ml-auto flex items-center gap-2">
@@ -127,7 +127,7 @@ export default function EditPage() {
             <Trash2 className="h-4 w-4" />
           </Button>
           <Link href={`/dashboard/builder/editor?page=${id}`}>
-            <Button variant="outline" className="border-border-strong bg-surface-2 text-white hover:bg-surface-2/80 gap-2">
+            <Button variant="outline" className="border-border-strong bg-surface-2 text-foreground hover:bg-surface-2/80 gap-2">
               <Paintbrush className="h-4 w-4" />
               Visual Editor
             </Button>

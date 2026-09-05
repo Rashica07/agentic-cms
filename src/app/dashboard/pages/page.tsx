@@ -82,13 +82,13 @@ export default function PagesList() {
       {/* ─── HEADER ───────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Pages & Content</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Pages & Content</h1>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2 hidden sm:flex text-neutral-300 border-border-strong hover:bg-surface-2 hover:text-white">
+          <Button variant="outline" className="gap-2 hidden sm:flex text-neutral-300 border-border-strong hover:bg-surface-2 hover:text-foreground">
             <Download className="h-4 w-4" /> Export
           </Button>
-          <Button variant="outline" className="gap-2 hidden sm:flex text-neutral-300 border-border-strong hover:bg-surface-2 hover:text-white">
+          <Button variant="outline" className="gap-2 hidden sm:flex text-neutral-300 border-border-strong hover:bg-surface-2 hover:text-foreground">
             <Upload className="h-4 w-4" /> Import
           </Button>
           <Link href="/dashboard/pages/new">
@@ -106,7 +106,7 @@ export default function PagesList() {
           onClick={() => setActiveType('all')}
           className={cn(
             'rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors',
-            activeType === 'all' ? 'bg-surface-2 text-white border border-border-strong' : 'bg-transparent border border-transparent text-neutral-400 hover:text-white hover:bg-surface-2/50'
+            activeType === 'all' ? 'bg-surface-2 text-foreground border border-border-strong' : 'bg-transparent border border-transparent text-neutral-400 hover:text-foreground hover:bg-surface-2/50'
           )}
         >
           All ({pages?.length ?? 0})
@@ -120,7 +120,7 @@ export default function PagesList() {
               onClick={() => setActiveType(type)}
               className={cn(
                 'flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-colors',
-                activeType === type ? 'bg-surface-2 text-white border border-border-strong' : 'bg-transparent border border-transparent text-neutral-400 hover:text-white hover:bg-surface-2/50'
+                activeType === type ? 'bg-surface-2 text-foreground border border-border-strong' : 'bg-transparent border border-transparent text-neutral-400 hover:text-foreground hover:bg-surface-2/50'
               )}
             >
               <meta.icon className="h-3 w-3 text-neutral-400" />
@@ -145,7 +145,7 @@ export default function PagesList() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Button variant="outline" className="h-9 px-3 gap-2 border-border-strong text-neutral-400 hover:text-white hidden sm:flex">
+            <Button variant="outline" className="h-9 px-3 gap-2 border-border-strong text-neutral-400 hover:text-foreground hidden sm:flex">
               <Filter className="h-4 w-4" /> Filter
             </Button>
           </div>
@@ -172,7 +172,7 @@ export default function PagesList() {
             <thead className="text-xs text-neutral-400 bg-surface-2/50 border-b border-border/50">
               <tr>
                 <th className="px-4 py-3 w-12 text-center font-medium">
-                  <button onClick={toggleSelectAll} className="text-neutral-500 hover:text-white transition-colors">
+                  <button onClick={toggleSelectAll} className="text-neutral-500 hover:text-foreground transition-colors">
                     {selectedIds.size === filteredPages.length && filteredPages.length > 0 ? (
                       <CheckSquare className="h-4 w-4 text-brand" />
                     ) : (
@@ -212,7 +212,7 @@ export default function PagesList() {
                       )}
                     >
                       <td className="px-4 py-3 text-center">
-                        <button onClick={() => toggleSelect(page.id)} className="text-neutral-500 hover:text-white transition-colors">
+                        <button onClick={() => toggleSelect(page.id)} className="text-neutral-500 hover:text-foreground transition-colors">
                           {isSelected ? (
                             <CheckSquare className="h-4 w-4 text-brand" />
                           ) : (
@@ -226,7 +226,7 @@ export default function PagesList() {
                             <meta.icon className="h-3.5 w-3.5" />
                           </div>
                           <div>
-                            <Link href={`/dashboard/pages/${page.id}`} className="font-semibold text-white hover:underline">
+                            <Link href={`/dashboard/pages/${page.id}`} className="font-semibold text-foreground hover:underline">
                               {page.title}
                             </Link>
                             <div className="text-xs text-neutral-500 mt-0.5 truncate max-w-[200px]">
@@ -281,7 +281,7 @@ export default function PagesList() {
                 <tr>
                   <td colSpan={6} className="px-4 py-16 text-center">
                     <FileText className="mx-auto h-12 w-12 text-neutral-600 mb-4" />
-                    <h3 className="mb-2 text-lg font-medium text-white">No content found</h3>
+                    <h3 className="mb-2 text-lg font-medium text-foreground">No content found</h3>
                     <p className="mb-6 text-sm text-neutral-400 max-w-sm mx-auto">
                       {searchQuery ? 'Try adjusting your search query or filters to find what you are looking for.' : 'Get started by creating a new page, product, article or event.'}
                     </p>

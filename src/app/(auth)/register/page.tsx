@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -17,15 +16,21 @@ const registerSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Include an uppercase letter, a lowercase letter, and a number',
+    ),
   tenantName: z.string().min(3, 'Business name must be at least 3 characters'),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
   const {
     register,
@@ -54,14 +59,41 @@ export default function RegisterPage() {
         tenantSlug,
       });
 
-      toast.success('Registration successful! Please log in.');
-      router.push('/login');
+      // No auto-login: the account is gated behind email verification +
+      // approval. Show the "check your email" screen instead of the dashboard.
+      setSubmittedEmail(data.email);
     } catch (error: any) {
       toast.error(error.message || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (submittedEmail) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Check your email</CardTitle>
+          <CardDescription>
+            We sent a verification link to <strong className="text-foreground">{submittedEmail}</strong>.
+            Click it to confirm your address.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-neutral-400">
+          <p>
+            After you verify, your workspace goes to our team for approval — we&apos;ll email you the
+            moment it&apos;s active. You can&apos;t log in until both steps are done.
+          </p>
+          <p className="text-xs">Didn&apos;t get it? Check spam, or the link may take a minute to arrive.</p>
+        </CardContent>
+        <CardFooter className="border-t border-border pt-4">
+          <Link href="/login" className="text-sm text-brand hover:underline">
+            Back to log in
+          </Link>
+        </CardFooter>
+      </Card>
+    );
+  }
 
   return (
     <Card>

@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { tenantHeaderFromRequest } from '@/lib/proxy-tenant';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -27,6 +28,7 @@ async function proxy(
     headers: {
       Authorization: `Bearer ${session.accessToken}`,
       'Content-Type': 'application/json',
+      ...tenantHeaderFromRequest(req),
     },
     cache: 'no-store',
   };

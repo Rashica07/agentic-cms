@@ -13,7 +13,8 @@ export default function AppsSettingsPage() {
           </div>
           <CardTitle className="text-xl font-bold">Apps & Integrations</CardTitle>
           <CardDescription className="text-neutral-400 mt-2 max-w-sm mx-auto">
-            Connect third-party tools to supercharge your store. The Novus App Store is coming soon.
+            You have no integrations connected yet. Webhooks and API keys — available now under
+            Settings — cover most automation needs while the app directory grows.
           </CardDescription>
         </CardHeader>
       </Card>

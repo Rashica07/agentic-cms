@@ -1,7 +1,7 @@
 /**
  * Thin client for the backend agent endpoints (`/api/v1/agent/*`).
  *
- * Kept separate from the `@kiq/novus-pulse` SDK for now so the agentic-cms
+ * Kept separate from the `@rashica07/novus-pulse` SDK for now so the agentic-cms
  * rebuild can evolve the agent surface independently; these can later fold
  * into the SDK once the shape settles. Auth mirrors the SDK: a Bearer access
  * token; tenant scoping is derived from the JWT server-side (TenantGuard).

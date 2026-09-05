@@ -132,12 +132,25 @@ export default function ThemesPage() {
           {/* Live Site Preview with Overlay */}
           <div className="relative h-[400px] w-full group overflow-hidden bg-white">
             <div className="absolute inset-0 origin-top-left pointer-events-none" style={{ width: '250%', height: '250%', transform: 'scale(0.4)' }}>
-              <iframe
-                id="site-preview-iframe"
-                src={siteUrl}
-                title="Live site preview"
-                className="w-full h-full border-none transition-transform duration-700 group-hover:scale-105"
-              />
+              {/* siteUrl is null until the tenant's site is discovered or a
+                  domain is set — an empty iframe beats loading a wrong host. */}
+              {siteUrl ? (
+                <iframe
+                  id="site-preview-iframe"
+                  src={siteUrl}
+                  title="Live site preview"
+                  className="w-full h-full border-none transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-neutral-950 text-center">
+                  <div className="max-w-sm space-y-2 p-8">
+                    <p className="text-sm font-medium text-neutral-300">No site connected</p>
+                    <p className="text-xs text-neutral-500">
+                      Set this tenant&apos;s domain in Settings → Site Connection, or run its app locally so the CMS can find it.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-8 left-8 flex items-center gap-4">

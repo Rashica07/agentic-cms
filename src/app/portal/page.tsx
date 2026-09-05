@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { createPulseClient } from '@/lib/novus-pulse-client';
-import type { ProposedContentChange, ContentChangeLogEntry } from '@kiq/novus-pulse';
+import type { ProposedContentChange, ContentChangeLogEntry } from '@rashica07/novus-pulse';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import {

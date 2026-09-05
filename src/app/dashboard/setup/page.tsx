@@ -44,26 +44,26 @@ export default function SetupWizard() {
         <div className="h-24 w-24 rounded-full bg-green-500/20 flex items-center justify-center mb-8">
           <CheckCircle2 className="h-12 w-12 text-green-500" />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-white mb-4">Your store is ready!</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground mb-4">Your store is ready!</h1>
         <p className="text-neutral-400 max-w-md text-center mb-10">
           We've set up your workspace. You can always change these settings later in your dashboard.
         </p>
         
         <div className="grid sm:grid-cols-2 gap-4 w-full max-w-xl mb-10">
           <Link href="/dashboard/pages/new" className="block p-4 rounded-xl border border-border bg-surface hover:bg-surface-2 transition-colors">
-            <h3 className="font-semibold text-white mb-1">Add more products</h3>
+            <h3 className="font-semibold text-foreground mb-1">Add more products</h3>
             <p className="text-xs text-neutral-400">Expand your catalog</p>
           </Link>
           <Link href="/dashboard/themes" className="block p-4 rounded-xl border border-border bg-surface hover:bg-surface-2 transition-colors">
-            <h3 className="font-semibold text-white mb-1">Customize your theme</h3>
+            <h3 className="font-semibold text-foreground mb-1">Customize your theme</h3>
             <p className="text-xs text-neutral-400">Make it your own</p>
           </Link>
           <Link href="/dashboard/settings" className="block p-4 rounded-xl border border-border bg-surface hover:bg-surface-2 transition-colors">
-            <h3 className="font-semibold text-white mb-1">Set up payments</h3>
+            <h3 className="font-semibold text-foreground mb-1">Set up payments</h3>
             <p className="text-xs text-neutral-400">Configure your gateway</p>
           </Link>
           <Link href="/dashboard/builder" className="block p-4 rounded-xl border border-border bg-surface hover:bg-surface-2 transition-colors">
-            <h3 className="font-semibold text-white mb-1">Visual Editor</h3>
+            <h3 className="font-semibold text-foreground mb-1">Visual Editor</h3>
             <p className="text-xs text-neutral-400">Design your storefront</p>
           </Link>
         </div>
@@ -81,7 +81,7 @@ export default function SetupWizard() {
       {/* ─── LEFT SIDEBAR (Progress) ────────────────────────────────────────── */}
       <div className="md:w-64 shrink-0 space-y-6">
         <div>
-          <h2 className="text-xl font-bold text-white">Setup Guide</h2>
+          <h2 className="text-xl font-bold text-foreground">Setup Guide</h2>
           <p className="text-sm text-neutral-400 mt-1">~5 minutes remaining</p>
         </div>
         
@@ -91,7 +91,7 @@ export default function SetupWizard() {
             const isCompleted = idx < currentStep;
             
             return (
-              <div key={step.id} className={cn("flex items-center gap-3 transition-colors", isActive ? "text-white" : isCompleted ? "text-neutral-500" : "text-neutral-600")}>
+              <div key={step.id} className={cn("flex items-center gap-3 transition-colors", isActive ? "text-foreground" : isCompleted ? "text-neutral-500" : "text-neutral-600")}>
                 <div className={cn("flex items-center justify-center h-6 w-6 rounded-full border text-xs font-bold", 
                   isCompleted ? "bg-brand border-brand text-black" : isActive ? "border-brand text-brand" : "border-neutral-700 text-neutral-600"
                 )}>
@@ -104,7 +104,7 @@ export default function SetupWizard() {
         </div>
         
         <div className="pt-8">
-          <Button variant="ghost" className="text-neutral-500 hover:text-white px-0" onClick={handleComplete}>
+          <Button variant="ghost" className="text-neutral-500 hover:text-foreground px-0" onClick={handleComplete}>
             Skip onboarding
           </Button>
         </div>
@@ -115,7 +115,7 @@ export default function SetupWizard() {
         <Card className="bg-surface border-border-strong shadow-xl overflow-hidden anim-fade-in relative min-h-[500px] flex flex-col">
           
           {/* Progress Bar */}
-          <div className="h-1 w-full bg-neutral-900 absolute top-0 left-0">
+          <div className="h-1 w-full bg-muted absolute top-0 left-0">
             <div className="h-full bg-brand transition-all duration-500" style={{ width: `${((currentStep) / STEPS.length) * 100}%` }} />
           </div>
 
@@ -125,18 +125,18 @@ export default function SetupWizard() {
             {currentStep === 0 && (
               <div className="space-y-8 anim-fade-up flex-1">
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Let's set up your store</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Let's set up your store</h2>
                   <p className="text-neutral-400">Tell us a bit about your business so we can configure your workspace.</p>
                 </div>
                 
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <Label className="text-neutral-300">Store name</Label>
-                    <Input placeholder="e.g. My Awesome Brand" className="h-11 bg-surface-2 border-border-strong text-white focus-visible:ring-brand" />
+                    <Input placeholder="e.g. My Awesome Brand" className="h-11 bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-neutral-300">Industry / Niche</Label>
-                    <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
+                    <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
                       <option>Fashion & Apparel</option>
                       <option>Electronics</option>
                       <option>Health & Beauty</option>
@@ -153,14 +153,14 @@ export default function SetupWizard() {
             {currentStep === 1 && (
               <div className="space-y-8 anim-fade-up flex-1">
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Where are you located?</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Where are you located?</h2>
                   <p className="text-neutral-400">This helps us set your default currency, shipping rates, and tax calculations.</p>
                 </div>
                 
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <Label className="text-neutral-300">Country / Region</Label>
-                    <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
+                    <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
                       <option>United States</option>
                       <option>United Kingdom</option>
                       <option>Albania</option>
@@ -171,7 +171,7 @@ export default function SetupWizard() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label className="text-neutral-300">Currency</Label>
-                      <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
+                      <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
                         <option>USD ($)</option>
                         <option>EUR (€)</option>
                         <option>GBP (£)</option>
@@ -180,7 +180,7 @@ export default function SetupWizard() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-neutral-300">Timezone</Label>
-                      <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
+                      <select className="flex h-11 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none">
                         <option>UTC-5 (EST)</option>
                         <option>UTC+0 (GMT)</option>
                         <option>UTC+1 (CET)</option>
@@ -198,7 +198,7 @@ export default function SetupWizard() {
                   <div className="h-16 w-16 bg-surface-2 rounded-2xl border border-border-strong flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <Package className="h-8 w-8 text-brand" />
                   </div>
-                  <h2 className="text-2xl font-bold text-white">Add your first product</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Add your first product</h2>
                   <p className="text-neutral-400 max-w-sm mx-auto">Get your store started by adding a product to sell, or import your existing catalog.</p>
                 </div>
                 
@@ -208,7 +208,7 @@ export default function SetupWizard() {
                       <Plus className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white mb-1">Enter manually</h3>
+                      <h3 className="font-semibold text-foreground mb-1">Enter manually</h3>
                       <p className="text-xs text-neutral-400">Create a product from scratch</p>
                     </div>
                   </div>
@@ -218,14 +218,14 @@ export default function SetupWizard() {
                       <Upload className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white mb-1">Import from CSV</h3>
+                      <h3 className="font-semibold text-foreground mb-1">Import from CSV</h3>
                       <p className="text-xs text-neutral-400">Migrating from another platform?</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="text-center pt-4">
-                  <button onClick={handleNext} className="text-sm text-neutral-500 hover:text-white transition-colors">
+                  <button onClick={handleNext} className="text-sm text-neutral-500 hover:text-foreground transition-colors">
                     Skip this step for now
                   </button>
                 </div>
@@ -236,7 +236,7 @@ export default function SetupWizard() {
             {currentStep === 3 && (
               <div className="space-y-6 anim-fade-up flex-1">
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-white">Choose a starting theme</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Choose a starting theme</h2>
                   <p className="text-neutral-400">You can always customize it later in the Visual Editor.</p>
                 </div>
                 
@@ -252,7 +252,7 @@ export default function SetupWizard() {
                       </div>
                     </div>
                     <div className="p-3 bg-surface-2">
-                      <h3 className="font-semibold text-white text-sm">Dawn</h3>
+                      <h3 className="font-semibold text-foreground text-sm">Dawn</h3>
                       <p className="text-xs text-neutral-400">Clean, minimalist design</p>
                     </div>
                   </div>
@@ -269,7 +269,7 @@ export default function SetupWizard() {
                       </div>
                     </div>
                     <div className="p-3 bg-surface-2">
-                      <h3 className="font-semibold text-white text-sm">Impact</h3>
+                      <h3 className="font-semibold text-foreground text-sm">Impact</h3>
                       <p className="text-xs text-neutral-400">Bold typography, big imagery</p>
                     </div>
                   </div>
@@ -279,7 +279,7 @@ export default function SetupWizard() {
 
             {/* Footer Buttons */}
             <div className="pt-8 mt-auto flex items-center justify-between border-t border-border/50">
-              <Button variant="ghost" className="text-neutral-400 hover:text-white" onClick={handleBack} disabled={currentStep === 0}>
+              <Button variant="ghost" className="text-neutral-400 hover:text-foreground" onClick={handleBack} disabled={currentStep === 0}>
                 <ArrowLeft className="h-4 w-4 mr-2" /> Back
               </Button>
               <Button className="bg-brand text-black hover:bg-brand-hover px-8" onClick={handleNext}>

@@ -4,7 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Edit2, Trash2, ArrowLeft, Layers, RefreshCcw } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, ArrowLeft, Layers, RefreshCcw, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -21,6 +21,7 @@ type ContentEntry = {
   id: string;
   slug: string;
   status: string;
+  locale: string;
   data: Record<string, any>;
   publishedAt: string | null;
   updatedAt: string;
@@ -70,6 +71,18 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
       const res = await fetch(`/api/content/entries/${typeApiId}/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete entry');
       toast.success('Entry moved to trash');
+      fetchData();
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleDuplicate = async (id: string) => {
+    try {
+      const res = await fetch(`/api/content/entries/${typeApiId}/${id}/duplicate`, { method: 'POST' });
+      if (!res.ok) throw new Error(await res.text());
+      const copy = await res.json();
+      toast.success(`Duplicated as “${copy.slug}”`);
       fetchData();
     } catch (err: any) {
       toast.error(err.message);
@@ -145,7 +158,7 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">{type.name}</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{type.name}</h1>
           <p className="text-neutral-400 mt-1">Manage entries for {type.name.toLowerCase()}</p>
         </div>
       </div>
@@ -239,11 +252,20 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/dashboard/content/${typeApiId}/${entry.id}`} className="font-medium text-white hover:text-brand transition-colors">
+                      <Link href={`/dashboard/content/${typeApiId}/${entry.id}`} className="font-medium text-foreground hover:text-brand transition-colors">
                         {displayField && entry.data[displayField] ? String(entry.data[displayField]) : 'Untitled'}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-neutral-500">{entry.slug}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs text-neutral-500">{entry.slug}</span>
+                        {entry.locale && (
+                          <span className="shrink-0 rounded bg-neutral-800 px-1.5 py-0.5 text-[9px] font-medium uppercase text-neutral-400">
+                            {entry.locale}
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-3">
                       {isTrash ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/10 text-red-400">
@@ -261,17 +283,20 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         {isTrash ? (
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-white" onClick={() => handleRestore(entry.id)}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-foreground" onClick={() => handleRestore(entry.id)}>
                             <RefreshCcw className="h-4 w-4" />
                           </Button>
                         ) : (
                           <>
                             <Link href={`/dashboard/content/${typeApiId}/${entry.id}`}>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-white">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-foreground" title="Edit">
                                 <Edit2 className="h-4 w-4" />
                               </Button>
                             </Link>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-red-400 hover:bg-red-400/10" onClick={() => handleDelete(entry.id, false)}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-foreground" title="Duplicate" onClick={() => handleDuplicate(entry.id)}>
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-red-400 hover:bg-red-400/10" title="Move to trash" onClick={() => handleDelete(entry.id, false)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </>

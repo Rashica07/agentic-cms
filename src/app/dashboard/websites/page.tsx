@@ -14,8 +14,8 @@ import Link from 'next/link';
 import { usePlan } from '@/hooks/usePlan';
 import { PLAN_LABEL } from '@/lib/plan';
 import { useUIStore } from '@/store/useStore';
+import { useSiteInfo } from '@/hooks/useSiteInfo';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:21113';
 const NEW_INSTALL_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 interface TenantSite {
@@ -33,7 +33,10 @@ function isRecentInstall(createdAt?: string): boolean {
 export default function TenantWebsitesPage() {
   const { data: session } = useSession();
   const { plan, can, requiredPlan, isSuperAdmin } = usePlan();
-  const { setActiveTenant } = useUIStore();
+  const { setActiveTenant, activeTenantId } = useUIStore();
+  // Only resolves the ACTIVE tenant's site — the backend has no bulk lookup —
+  // so other cards link to Site Connection instead of guessing a URL.
+  const { siteUrl: activeSiteUrl } = useSiteInfo();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState('');
@@ -131,11 +134,25 @@ export default function TenantWebsitesPage() {
                 </div>
 
                 <div className="flex gap-2 pt-1">
-                  <a href={SITE_URL} target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button variant="outline" size="sm" className="w-full gap-1.5">
-                      <ExternalLink className="h-3.5 w-3.5" /> Open
-                    </Button>
-                  </a>
+                  {/* Only the active tenant's URL is resolvable here, and it was
+                      previously a hardcoded port pointing at another project. */}
+                  {t.id === activeTenantId && activeSiteUrl ? (
+                    <a href={activeSiteUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full gap-1.5">
+                        <ExternalLink className="h-3.5 w-3.5" /> Open
+                      </Button>
+                    </a>
+                  ) : (
+                    <Link
+                      href="/dashboard/settings/site"
+                      onClick={() => setActiveTenant({ id: t.id, slug: t.slug, name: t.name })}
+                      className="flex-1"
+                    >
+                      <Button variant="outline" size="sm" className="w-full gap-1.5 text-neutral-400" title="Resolve or set this tenant's site URL">
+                        <ExternalLink className="h-3.5 w-3.5" /> Connect
+                      </Button>
+                    </Link>
+                  )}
                   <Link
                     href="/dashboard/builder"
                     onClick={() => setActiveTenant({ id: t.id, slug: t.slug, name: t.name })}
@@ -190,17 +207,17 @@ export default function TenantWebsitesPage() {
       {/* Connection Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-xl p-6 shadow-xl space-y-6">
+          <div className="w-full max-w-md bg-card border border-border rounded-xl p-6 shadow-xl space-y-6">
             <div>
-              <h3 className="text-xl font-bold text-white">Connect a New Website</h3>
-              <p className="text-sm text-neutral-400 mt-1">
+              <h3 className="text-xl font-bold text-foreground">Connect a New Website</h3>
+              <p className="text-sm text-muted-foreground mt-1">
                 Register a new tenant website on this CMS network.
               </p>
             </div>
 
             <form onSubmit={handleCreateTenant} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="tenant-name" className="text-xs font-semibold text-neutral-300">
+                <Label htmlFor="tenant-name" className="text-xs font-semibold text-muted-foreground">
                   Website Name
                 </Label>
                 <Input
@@ -215,12 +232,11 @@ export default function TenantWebsitesPage() {
                     }
                   }}
                   required
-                  className="bg-neutral-950 border-neutral-800 text-white"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tenant-slug" className="text-xs font-semibold text-neutral-300">
+                <Label htmlFor="tenant-slug" className="text-xs font-semibold text-muted-foreground">
                   Website URL Slug
                 </Label>
                 <Input
@@ -232,12 +248,11 @@ export default function TenantWebsitesPage() {
                   required
                   pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
                   title="Lowercase letters, numbers, and hyphens only (e.g., travel-me)"
-                  className="bg-neutral-950 border-neutral-800 text-white"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-semibold text-neutral-300">
+                <Label className="text-xs font-semibold text-muted-foreground">
                   Select Plan Tier
                 </Label>
                 <div className="grid grid-cols-3 gap-2">
@@ -249,7 +264,7 @@ export default function TenantWebsitesPage() {
                       className={`py-2 px-3 rounded-lg text-xs font-semibold border capitalize transition-colors ${
                         planSelection === tier
                           ? 'bg-brand/20 border-brand text-brand'
-                          : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:border-neutral-700'
+                          : 'bg-background border-border text-muted-foreground hover:border-neutral-500'
                       }`}
                     >
                       {tier}
@@ -264,7 +279,7 @@ export default function TenantWebsitesPage() {
                   variant="outline"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSubmitting}
-                  className="bg-transparent border-neutral-800 text-neutral-300 hover:bg-neutral-800"
+                  className="bg-transparent border-border text-muted-foreground hover:bg-muted"
                 >
                   Cancel
                 </Button>

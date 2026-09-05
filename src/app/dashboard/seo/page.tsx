@@ -39,7 +39,7 @@ export default function SeoPage() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 animate-pulse rounded-xl bg-neutral-900" />
+              <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />
             ))}
           </div>
         ) : (
@@ -129,8 +129,8 @@ function SeoEditor({ page, onClose }: { page: any; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-background border-l border-border overflow-y-auto">
-        <div className="sticky top-0 z-10 bg-background border-b border-border px-6 py-4 flex items-center justify-between">
+      <div className="relative w-full max-w-lg bg-background border-l border-border flex flex-col h-full max-h-screen shadow-2xl">
+        <div className="shrink-0 bg-background border-b border-border px-6 py-4 flex items-center justify-between">
           <div>
             <h2 className="font-bold text-lg">SEO Settings</h2>
             <p className="text-xs text-neutral-500 font-mono">/{page.slug}</p>
@@ -140,7 +140,8 @@ function SeoEditor({ page, onClose }: { page: any; onClose: () => void }) {
           </Button>
         </div>
 
-        <div className="p-6 space-y-6">
+        {/* Scrollable body — grows to fill, scrolls when content overflows. */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
           {/* Title */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -222,7 +223,10 @@ function SeoEditor({ page, onClose }: { page: any; onClose: () => void }) {
             </div>
           </div>
 
-          {/* Save */}
+        </div>
+
+        {/* Pinned footer — Save is always reachable, never scrolled off. */}
+        <div className="shrink-0 border-t border-border p-4 bg-background">
           <Button className="w-full gap-2" onClick={save} disabled={saving}>
             {saving ? 'Saving...' : (
               <>

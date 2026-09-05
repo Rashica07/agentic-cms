@@ -124,7 +124,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                 <Input 
                   id="title" 
                   placeholder="e.g. Summer Collection 2026" 
-                  className="bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                  className="bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
                   {...register('title')} 
                 />
                 {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
@@ -136,7 +136,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                   <textarea
                     id="content"
                     rows={12}
-                    className="flex w-full rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand font-mono"
+                    className="flex w-full rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-foreground placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand font-mono"
                     placeholder="Enter raw content..."
                     {...register('content')}
                   />
@@ -159,14 +159,14 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                     <Label htmlFor="price" className="text-sm text-neutral-300">Price</Label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">€</span>
-                      <Input id="price" type="number" step="0.01" placeholder="0.00" className="pl-7 bg-surface-2 border-border-strong text-white" {...register('price')} />
+                      <Input id="price" type="number" step="0.01" placeholder="0.00" className="pl-7 bg-surface-2 border-border-strong text-foreground" {...register('price')} />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="compareAtPrice" className="text-sm text-neutral-300">Compare-at price</Label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">€</span>
-                      <Input id="compareAtPrice" type="number" step="0.01" placeholder="0.00" className="pl-7 bg-surface-2 border-border-strong text-white" {...register('compareAtPrice')} />
+                      <Input id="compareAtPrice" type="number" step="0.01" placeholder="0.00" className="pl-7 bg-surface-2 border-border-strong text-foreground" {...register('compareAtPrice')} />
                     </div>
                   </div>
                 </CardContent>
@@ -192,11 +192,11 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                   <div className="grid grid-cols-2 gap-5">
                     <div className="space-y-2">
                       <Label htmlFor="sku" className="text-sm text-neutral-300">SKU (Stock Keeping Unit)</Label>
-                      <Input id="sku" placeholder="SKU-123" className="bg-surface-2 border-border-strong text-white" {...register('sku')} />
+                      <Input id="sku" placeholder="SKU-123" className="bg-surface-2 border-border-strong text-foreground" {...register('sku')} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="stockQuantity" className="text-sm text-neutral-300">Quantity available</Label>
-                      <Input id="stockQuantity" type="number" placeholder="0" className="bg-surface-2 border-border-strong text-white" {...register('stockQuantity')} />
+                      <Input id="stockQuantity" type="number" placeholder="0" className="bg-surface-2 border-border-strong text-foreground" {...register('stockQuantity')} />
                     </div>
                   </div>
                 </CardContent>
@@ -262,7 +262,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                   <Input 
                     id="slug" 
                     placeholder="my-page-slug" 
-                    className="rounded-l-none bg-surface-2 border-border-strong text-white focus-visible:ring-brand" 
+                    className="rounded-l-none bg-surface-2 border-border-strong text-foreground focus-visible:ring-brand" 
                     {...register('slug')} 
                   />
                 </div>
@@ -285,7 +285,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
               <div className="flex items-center justify-between p-3 rounded-lg border border-border-strong bg-surface-2">
                 <div className="flex items-center gap-3">
                   <span className={cn('h-2.5 w-2.5 rounded-full', isPublished ? 'bg-green-500' : 'bg-amber-500')} />
-                  <span className="font-semibold text-sm text-white">{isPublished ? 'Active' : 'Draft'}</span>
+                  <span className="font-semibold text-sm text-foreground">{isPublished ? 'Active' : 'Draft'}</span>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" {...register('published')} />
@@ -308,7 +308,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                 <Label htmlFor="type" className="text-sm font-medium text-neutral-300">Content Type</Label>
                 <select
                   id="type"
-                  className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
+                  className="flex h-10 w-full items-center rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
                   {...register('type')}
                 >
                   {CONTENT_TYPES.map(([value, label]) => (
@@ -319,12 +319,12 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-neutral-300">Collections / Category</Label>
-                <Input placeholder="e.g. Summer, Featured" className="h-10 bg-surface-2 border-border-strong text-white" />
+                <Input placeholder="e.g. Summer, Featured" className="h-10 bg-surface-2 border-border-strong text-foreground" />
               </div>
               
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-neutral-300">Tags</Label>
-                <Input placeholder="e.g. Vintage, Cotton" className="h-10 bg-surface-2 border-border-strong text-white" />
+                <Input placeholder="e.g. Vintage, Cotton" className="h-10 bg-surface-2 border-border-strong text-foreground" />
               </div>
             </CardContent>
           </Card>

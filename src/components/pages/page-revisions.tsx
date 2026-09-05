@@ -52,7 +52,7 @@ export function PageRevisionsPanel({ pageId, open }: { pageId: string; open: boo
               return (
                 <li key={rev.id} className="flex items-center gap-3 py-3">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-white">{rev.title}</p>
+                    <p className="truncate text-sm font-medium text-foreground">{rev.title}</p>
                     <p className="text-xs text-neutral-500">
                       {when} · /{rev.slug} · {rev.published ? 'Published' : 'Draft'}
                     </p>

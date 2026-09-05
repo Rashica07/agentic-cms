@@ -1,4 +1,4 @@
-import { NovusPulse } from '@kiq/novus-pulse';
+import { NovusPulse } from '@rashica07/novus-pulse';
 import { signOut } from 'next-auth/react';
 import type { DefaultSession } from 'next-auth';
 
