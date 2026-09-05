@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import * as Dialog from '@radix-ui/react-dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
 type ContentField = {
@@ -225,40 +225,35 @@ export default function SchemaBuilderPage() {
 
       {/* --- MODALS --- */}
       {/* Create Type Modal */}
-      <Dialog.Root open={isTypeModalOpen} onOpenChange={setTypeModalOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/60 z-50 animate-in fade-in" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-md bg-surface border border-border-strong rounded-xl p-6 shadow-2xl z-50">
-            <Dialog.Title className="text-lg font-bold text-white mb-4">Create Content Type</Dialog.Title>
-            <form onSubmit={handleCreateType} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="name">Display Name</Label>
-                <Input id="name" required value={newTypeName} onChange={e => {
-                  setNewTypeName(e.target.value);
-                  setNewTypeApiId(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
-                }} placeholder="e.g. Product" className="bg-surface-2" />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="apiId">API ID</Label>
-                <Input id="apiId" required value={newTypeApiId} onChange={e => setNewTypeApiId(e.target.value)} placeholder="e.g. product" className="bg-surface-2 font-mono" />
-                <p className="text-xs text-neutral-500">The unique identifier used in the API.</p>
-              </div>
-              <div className="flex justify-end gap-3 mt-6">
-                <Button type="button" variant="ghost" onClick={() => setTypeModalOpen(false)}>Cancel</Button>
-                <Button type="submit">Create</Button>
-              </div>
-            </form>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <Dialog open={isTypeModalOpen} onOpenChange={setTypeModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogTitle className="mb-4">Create Content Type</DialogTitle>
+          <form onSubmit={handleCreateType} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="name">Display Name</Label>
+              <Input id="name" required value={newTypeName} onChange={e => {
+                setNewTypeName(e.target.value);
+                setNewTypeApiId(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+              }} placeholder="e.g. Product" className="bg-surface-2" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="apiId">API ID</Label>
+              <Input id="apiId" required value={newTypeApiId} onChange={e => setNewTypeApiId(e.target.value)} placeholder="e.g. product" className="bg-surface-2 font-mono" />
+              <p className="text-xs text-neutral-500">The unique identifier used in the API.</p>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button type="button" variant="ghost" onClick={() => setTypeModalOpen(false)}>Cancel</Button>
+              <Button type="submit">Create</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Create Field Modal */}
-      <Dialog.Root open={isFieldModalOpen} onOpenChange={setFieldModalOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/60 z-50 animate-in fade-in" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-md bg-surface border border-border-strong rounded-xl p-6 shadow-2xl z-50">
-            <Dialog.Title className="text-lg font-bold text-white mb-4">Add Field to {selectedType?.name}</Dialog.Title>
-            <form onSubmit={handleCreateField} className="space-y-4">
+      <Dialog open={isFieldModalOpen} onOpenChange={setFieldModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogTitle className="mb-4">Add Field to {selectedType?.name}</DialogTitle>
+          <form onSubmit={handleCreateField} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="fieldLabel">Field Label</Label>
                 <Input id="fieldLabel" required value={newFieldLabel} onChange={e => {
@@ -312,14 +307,13 @@ export default function SchemaBuilderPage() {
                 <Label htmlFor="required" className="cursor-pointer">Make this field required</Label>
               </div>
               
-              <div className="flex justify-end gap-3 mt-6">
-                <Button type="button" variant="ghost" onClick={() => setFieldModalOpen(false)}>Cancel</Button>
-                <Button type="submit">Add Field</Button>
-              </div>
-            </form>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button type="button" variant="ghost" onClick={() => setFieldModalOpen(false)}>Cancel</Button>
+              <Button type="submit">Add Field</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );
