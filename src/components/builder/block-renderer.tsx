@@ -121,7 +121,7 @@ function BlockView({ block, theme, products }: { block: Block; theme: RenderThem
             color: p.imageUrl ? '#fff' : undefined,
           }}
         >
-          <h1 className="text-4xl font-extrabold max-w-2xl" style={heading}>
+          <h1 className="text-[19px] font-semibold max-w-2xl" style={heading}>
             {str(p.heading, 'Welcome')}
           </h1>
           {!!p.subheading && <p className="max-w-xl opacity-90">{str(p.subheading)}</p>}

@@ -602,7 +602,7 @@ function PageWorkspace({
             <Button variant="outline" className="flex-1 border-neutral-800 text-white hover:bg-neutral-900" onClick={() => handleSave(false)} disabled={saving}>
               {saving ? 'Saving...' : 'Save Draft'}
             </Button>
-            <Button className="flex-1 gap-2 bg-brand text-black hover:bg-brand/90 font-bold" onClick={() => handleSave(true)} disabled={saving}>
+            <Button className="flex-1 gap-2 bg-brand text-brand-foreground hover:bg-brand/90 font-bold" onClick={() => handleSave(true)} disabled={saving}>
               <UploadCloud className="h-4 w-4" />
               Publish
             </Button>

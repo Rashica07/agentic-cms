@@ -51,8 +51,7 @@ export default function TaxonomyPage() {
   return (
     <div className="space-y-6 max-w-5xl pb-10 anim-fade-in">
       <div>
-        <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
-          <FolderTree className="h-6 w-6 text-brand" /> Taxonomy
+        <h1 className="flex items-center gap-2 text-[19px] font-semibold tracking-[-0.01em] text-foreground"> Taxonomy
         </h1>
         <p className="mt-1 text-sm text-neutral-400">
           Built-in <span className="font-mono text-xs">category</span> and <span className="font-mono text-xs">tag</span> content types — reference them from any other type.
@@ -67,7 +66,7 @@ export default function TaxonomyPage() {
             onClick={() => setTab(t)}
             className={cn(
               'relative px-4 py-2 text-sm font-medium capitalize transition-colors',
-              tab === t ? 'text-brand' : 'text-neutral-400 hover:text-neutral-200',
+              tab === t ? 'text-brand-fg' : 'text-neutral-400 hover:text-neutral-200',
             )}
           >
             {t}
@@ -210,7 +209,7 @@ function CategoryTree({ entries, reload }: { entries: TaxEntry[]; reload: () => 
               <button
                 type="button"
                 onClick={() => { setEditingId(entry.id); setEditName(nameOf(entry)); }}
-                className="flex-1 truncate text-left text-sm font-medium text-foreground hover:text-brand"
+                className="flex-1 truncate text-left text-sm font-medium text-foreground hover:text-brand-fg"
               >
                 {nameOf(entry)}
               </button>
@@ -356,7 +355,7 @@ function TagGrid({ entries, reload }: { entries: TaxEntry[]; reload: () => Promi
           <div className="flex flex-wrap gap-2">
             {visible.map((tag) => (
               <span key={tag.id} className="group inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-surface-2 py-1.5 pl-3 pr-1.5 text-sm text-foreground">
-                <TagIcon className="h-3 w-3 shrink-0 text-brand" />
+                <TagIcon className="h-3 w-3 shrink-0 text-brand-fg" />
                 {nameOf(tag)}
                 <button
                   type="button"

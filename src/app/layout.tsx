@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const uiFont = Instrument_Sans({
+  variable: "--font-ui",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dataFont = JetBrains_Mono({
+  variable: "--font-data",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -19,26 +21,17 @@ export const metadata: Metadata = {
       (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3002"),
   ),
   title: {
-    default: "Novus Pulse CMS",
-    template: "%s · Novus Pulse CMS",
+    default: "OMNI CMS",
+    template: "%s · OMNI CMS",
   },
   description:
-    "The agentic CMS — pages, structured content, and media for multi-tenant sites, with a visual editor, AI copilot, and live realtime sync.",
-  applicationName: "Novus Pulse CMS",
+    "OMNI CMS — structured content, pages, media and publishing for your sites, with a visual editor and an AI copilot.",
+  applicationName: "OMNI CMS",
   openGraph: {
     type: "website",
-    siteName: "Novus Pulse CMS",
-    title: "Novus Pulse CMS",
-    description:
-      "The agentic CMS — pages, structured content, and media with a live pulse.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Novus Pulse CMS" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Novus Pulse CMS",
-    description:
-      "The agentic CMS — pages, structured content, and media with a live pulse.",
-    images: ["/og.png"],
+    siteName: "OMNI CMS",
+    title: "OMNI CMS",
+    description: "Structured content, pages, media and publishing for your sites.",
   },
   robots: { index: false, follow: false },
 };
@@ -49,16 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <head>
-        {/* No-flash theme: apply the saved theme class before first paint.
-            Light is the default; only add `dark` when explicitly chosen. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem('np-theme')==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`,
-          }}
-        />
-      </head>
+    <html lang="en" className={`dark ${uiFont.variable} ${dataFont.variable}`}>
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>

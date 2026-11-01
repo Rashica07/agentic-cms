@@ -147,7 +147,7 @@ export default function SchemaBuilderPage() {
               key={type.id}
               onClick={() => setSelectedType(type)}
               className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors ${
-                selectedType?.id === type.id ? 'bg-brand/10 text-brand font-medium' : 'text-neutral-400 hover:text-neutral-200 hover:bg-surface-2'
+                selectedType?.id === type.id ? 'bg-brand/10 text-brand-fg font-medium' : 'text-neutral-400 hover:text-neutral-200 hover:bg-surface-2'
               }`}
             >
               <Database className="h-4 w-4" />

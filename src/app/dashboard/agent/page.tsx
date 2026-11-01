@@ -72,7 +72,7 @@ export default function AgentPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand-fg">
           <Sparkles className="h-5 w-5" />
         </div>
         <div>

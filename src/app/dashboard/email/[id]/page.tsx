@@ -219,7 +219,7 @@ export default function CampaignPage() {
           <Card className="bg-surface border-border">
             <CardHeader className="p-4 pb-2">
               <CardTitle className="flex items-center gap-2 text-sm text-neutral-300">
-                <Users2 className="h-4 w-4 text-brand" /> Audience
+                <Users2 className="h-4 w-4 text-brand-fg" /> Audience
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 p-4 pt-0">

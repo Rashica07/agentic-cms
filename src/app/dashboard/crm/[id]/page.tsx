@@ -82,7 +82,7 @@ export default function ContactDetailPage() {
             {contact.name.slice(0, 1).toUpperCase()}
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">{contact.name}</h1>
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-foreground">{contact.name}</h1>
             <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-neutral-400">
               {contact.email && <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {contact.email}</span>}
               {contact.phone && <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {contact.phone}</span>}
@@ -134,7 +134,7 @@ export default function ContactDetailPage() {
           <Card className="bg-surface border-border shadow-sm lg:col-span-3">
             <CardHeader className="border-b border-border/50 pb-4">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <CalendarCheck className="h-4 w-4 text-brand" /> Reservations
+                <CalendarCheck className="h-4 w-4 text-brand-fg" /> Reservations
               </CardTitle>
             </CardHeader>
             <CardContent className="divide-y divide-border/50 p-0">
@@ -153,7 +153,7 @@ export default function ContactDetailPage() {
         <Card className="bg-surface border-border shadow-sm lg:col-span-2">
           <CardHeader className="border-b border-border/50 pb-4">
             <CardTitle className="flex items-center gap-2 text-base font-semibold">
-              <StickyNote className="h-4 w-4 text-brand" /> Notes
+              <StickyNote className="h-4 w-4 text-brand-fg" /> Notes
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 pt-5">

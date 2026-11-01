@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Status } from '@/components/omni/status';
 import { useRouter } from 'next/navigation';
 import { Plus, Search, Edit2, Trash2, ArrowLeft, Layers, RefreshCcw, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -158,7 +159,7 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">{type.name}</h1>
+          <h1 className="text-[19px] font-semibold text-foreground tracking-[-0.01em]">{type.name}</h1>
           <p className="text-neutral-400 mt-1">Manage entries for {type.name.toLowerCase()}</p>
         </div>
       </div>
@@ -190,18 +191,18 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
         </div>
         <Link href={`/dashboard/content/${typeApiId}/new`}>
           <Button className="gap-2 bg-brand text-brand-foreground hover:bg-brand/90">
-            <Plus className="h-4 w-4" /> Create New
+            <Plus className="h-4 w-4" /> New entry
           </Button>
         </Link>
       </div>
 
       <div className="bg-surface border border-border rounded-xl overflow-hidden">
         {selectedIds.size > 0 && (
-          <div className="bg-brand/10 border-b border-brand/20 px-4 py-2 flex items-center justify-between">
-            <span className="text-sm font-medium text-brand">{selectedIds.size} selected</span>
+          <div className="bg-brand/10 border-b border-border-strong px-4 py-2 flex items-center justify-between">
+            <span className="text-sm font-medium text-brand-fg">{selectedIds.size} selected</span>
             <div className="flex items-center gap-2">
               {filter === 'trash' ? (
-                <Button size="sm" variant="outline" className="h-7 text-xs border-brand/20 text-brand" onClick={() => handleBulkAction('restore')}>Restore Selected</Button>
+                <Button size="sm" variant="outline" className="h-7 text-xs border-border-strong text-brand-fg" onClick={() => handleBulkAction('restore')}>Restore Selected</Button>
               ) : (
                 <>
                   <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => handleBulkAction('publish')}>Publish</Button>
@@ -252,7 +253,7 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/dashboard/content/${typeApiId}/${entry.id}`} className="font-medium text-foreground hover:text-brand transition-colors">
+                      <Link href={`/dashboard/content/${typeApiId}/${entry.id}`} className="font-medium text-foreground hover:text-brand-fg transition-colors">
                         {displayField && entry.data[displayField] ? String(entry.data[displayField]) : 'Untitled'}
                       </Link>
                     </td>
@@ -268,13 +269,9 @@ export default function ContentEntriesPage({ params }: { params: Promise<{ typeA
                     </td>
                     <td className="px-4 py-3">
                       {isTrash ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/10 text-red-400">
-                          trashed
-                        </span>
+                        <Status label="In trash" tone="danger" />
                       ) : (
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusColors[entry.status] || statusColors.draft}`}>
-                          {entry.status}
-                        </span>
+                        <Status status={entry.status} />
                       )}
                     </td>
                     <td className="px-4 py-3 text-neutral-500 hidden md:table-cell">

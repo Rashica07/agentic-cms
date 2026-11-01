@@ -15,7 +15,7 @@ export default function PendingApprovalPage() {
     <Card>
       <CardHeader>
         <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-brand/10">
-          <Clock className="h-5 w-5 text-brand" />
+          <Clock className="h-5 w-5 text-brand-fg" />
         </div>
         <CardTitle className="text-2xl">Awaiting approval</CardTitle>
         <CardDescription>Your workspace is verified and in our review queue.</CardDescription>
@@ -28,7 +28,7 @@ export default function PendingApprovalPage() {
         <p className="text-xs">Think this is taking too long? Reply to your signup email and we&apos;ll take a look.</p>
       </CardContent>
       <CardFooter className="border-t border-border pt-4">
-        <Link href="/login" className="text-sm text-brand hover:underline">
+        <Link href="/login" className="text-sm text-brand-fg hover:underline">
           Back to log in
         </Link>
       </CardFooter>

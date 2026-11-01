@@ -120,7 +120,7 @@ export default function ModulesSettingsPage() {
         <CardHeader className="pb-4 border-b border-border/50">
           <div className="flex items-center gap-3">
             <div className="bg-brand/10 w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
-              <Blocks className="h-5 w-5 text-brand" />
+              <Blocks className="h-5 w-5 text-brand-fg" />
             </div>
             <div>
               <CardTitle className="text-lg font-semibold">Modules</CardTitle>

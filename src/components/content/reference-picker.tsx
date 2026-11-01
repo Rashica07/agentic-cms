@@ -115,7 +115,7 @@ export function ReferencePicker({
           const entry = byId.get(id);
           return (
             <span key={id} className="inline-flex items-center gap-1.5 rounded-md border border-border-strong bg-surface-2 py-1 pl-2 pr-1 text-xs text-foreground">
-              <Link2 className="h-3 w-3 shrink-0 text-brand" />
+              <Link2 className="h-3 w-3 shrink-0 text-brand-fg" />
               {entry ? entryLabel(entry) : <span className="font-mono text-neutral-500">{id.slice(0, 8)}…</span>}
               <button type="button" onClick={() => remove(id)} className="rounded p-0.5 text-neutral-500 transition-colors hover:bg-red-500/10 hover:text-red-400">
                 <X className="h-3 w-3" />
@@ -177,7 +177,7 @@ export function ReferencePicker({
                       )}
                     >
                       <div className="min-w-0">
-                        <p className={cn('truncate text-sm font-medium', active ? 'text-brand' : 'text-foreground')}>{entryLabel(entry)}</p>
+                        <p className={cn('truncate text-sm font-medium', active ? 'text-brand-fg' : 'text-foreground')}>{entryLabel(entry)}</p>
                         <p className="truncate font-mono text-[10px] text-neutral-500">{entry.slug}</p>
                       </div>
                       <span className="shrink-0 rounded bg-neutral-800 px-1.5 py-0.5 text-[9px] font-bold uppercase text-neutral-400">

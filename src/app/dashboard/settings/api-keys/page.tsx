@@ -79,7 +79,7 @@ export default function ApiKeysSettingsPage() {
         <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-4">
           <div className="space-y-1">
             <CardTitle className="flex items-center gap-2 text-base font-semibold">
-              <KeyRound className="h-4 w-4 text-brand" /> API Keys
+              <KeyRound className="h-4 w-4 text-brand-fg" /> API Keys
             </CardTitle>
             <CardDescription>
               Authenticate the public delivery API and unlock draft preview.

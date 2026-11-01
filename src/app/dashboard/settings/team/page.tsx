@@ -78,7 +78,7 @@ export default function TeamSettingsPage() {
             <CardTitle className="text-lg font-semibold">Team Members</CardTitle>
             <CardDescription className="text-neutral-400 mt-1">Manage who has access to your workspace.</CardDescription>
           </div>
-          <Button onClick={() => setShowInviteForm(!showInviteForm)} className="bg-brand text-black hover:bg-brand-hover gap-2">
+          <Button onClick={() => setShowInviteForm(!showInviteForm)} className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2">
             <Plus className="h-4 w-4" /> Invite member
           </Button>
         </CardHeader>
@@ -110,7 +110,7 @@ export default function TeamSettingsPage() {
                   <option value="viewer">Viewer</option>
                 </select>
               </div>
-              <Button type="submit" disabled={inviting} className="bg-brand text-black hover:bg-brand-hover">
+              <Button type="submit" disabled={inviting} className="bg-brand text-brand-foreground hover:bg-brand-hover">
                 {inviting ? 'Sending...' : 'Send Invite'}
               </Button>
             </form>
@@ -134,7 +134,7 @@ export default function TeamSettingsPage() {
                     <p className="text-xs text-neutral-500 mt-0.5">{member.email}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-brand/10 text-brand">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-brand/10 text-brand-fg">
                       {member.role}
                     </span>
                   </td>
@@ -196,7 +196,7 @@ export default function TeamSettingsPage() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="pb-4 border-b border-border/50">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-brand" />
+            <ShieldCheck className="h-5 w-5 text-brand-fg" />
             Roles & Permissions Guide
           </CardTitle>
           <CardDescription className="text-neutral-400 mt-1">What each role can do in your workspace.</CardDescription>
@@ -204,7 +204,7 @@ export default function TeamSettingsPage() {
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center justify-between p-4 rounded-xl border border-border-strong bg-surface-2">
             <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-brand">
+              <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-brand-fg">
                 <UserCog className="h-5 w-5" />
               </div>
               <div>
