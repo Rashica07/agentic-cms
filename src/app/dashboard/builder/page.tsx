@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 import { useSiteInfo } from '@/hooks/useSiteInfo';
+import { THEME_PREVIEW_HTML } from '@/demo/theme-preview';
 
 const DEFAULT_THEME = {
   colors: {
@@ -134,7 +135,15 @@ export default function ThemesPage() {
             <div className="absolute inset-0 origin-top-left pointer-events-none" style={{ width: '250%', height: '250%', transform: 'scale(0.4)' }}>
               {/* siteUrl is null until the tenant's site is discovered or a
                   domain is set — an empty iframe beats loading a wrong host. */}
-              {siteUrl ? (
+              {process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' ? (
+                <iframe
+                  id="site-preview-iframe"
+                  srcDoc={THEME_PREVIEW_HTML}
+                  sandbox="allow-scripts"
+                  title="Live site preview"
+                  className="w-full h-full border-none transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : siteUrl ? (
                 <iframe
                   id="site-preview-iframe"
                   src={siteUrl}

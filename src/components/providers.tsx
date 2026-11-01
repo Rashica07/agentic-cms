@@ -5,6 +5,10 @@ import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
 import { useTheme } from '@/hooks/useTheme';
+import { installDemoApi, DEMO_FLAG } from '@/demo/mock-api';
+
+// Must run before any query fires. No-op during SSR.
+if (DEMO_FLAG) installDemoApi();
 
 /**
  * Watches the session for a failed token refresh and forces a clean

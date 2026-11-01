@@ -41,6 +41,7 @@ import { useEnabledModules, type ModuleKey } from '@/hooks/useModules';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SupportWidget } from '@/components/support-widget';
+import { DemoBanner } from '@/components/demo-banner';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -337,6 +338,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
       {/* ─── MAIN CONTENT COLUMN ─────────────────────────────────────────────────── */}
       <main className="flex flex-1 flex-col min-w-0 bg-[#0a0a0a]">
+        {process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' && <DemoBanner />}
         
         {/* ─── TOP NAVIGATION BAR ────────────────────────────────────────────────── */}
         <header className="h-14 shrink-0 flex items-center justify-between px-4 lg:px-6 bg-[#0a0a0a] border-b border-border/40">
