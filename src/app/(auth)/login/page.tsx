@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { DemoEnter } from '@/components/demo-enter';
 import { useUIStore } from '@/store/useStore';
 
 const loginSchema = z.object({
@@ -101,7 +102,7 @@ function LoginForm() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link href="/forgot-password" className="text-xs text-brand hover:underline">
+              <Link href="/forgot-password" className="text-xs text-brand-fg hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -116,7 +117,7 @@ function LoginForm() {
       <CardFooter className="flex justify-center border-t border-border pt-4">
         <p className="text-sm text-neutral-400">
           Don't have a tenant yet?{' '}
-          <Link href="/register" className="text-brand hover:underline">
+          <Link href="/register" className="text-brand-fg hover:underline">
             Register your business
           </Link>
         </p>
@@ -125,7 +126,10 @@ function LoginForm() {
   );
 }
 
+const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+
 export default function LoginPage() {
+  if (DEMO) return <DemoEnter />;
   return (
     <Suspense fallback={<div className="flex h-64 items-center justify-center">Loading...</div>}>
       <LoginForm />

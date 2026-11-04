@@ -83,7 +83,7 @@ export function MediaPicker({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex h-20 w-20 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border-strong bg-surface-2/50 text-neutral-500 transition-colors hover:border-brand/50 hover:text-brand"
+            className="flex h-20 w-20 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border-strong bg-surface-2/50 text-neutral-500 transition-colors hover:border-brand/50 hover:text-brand-fg"
           >
             <Plus className="h-4 w-4" />
             <span className="text-[10px]">Select</span>
@@ -147,7 +147,7 @@ export function MediaPicker({
                           onClick={() => { setFolderId(folder.id); setFolderName(folder.name); }}
                           className="inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-surface-2 px-2.5 py-1.5 text-xs text-neutral-300 transition-colors hover:border-brand/40 hover:text-foreground"
                         >
-                          <Folder className="h-3.5 w-3.5 shrink-0 text-brand" />
+                          <Folder className="h-3.5 w-3.5 shrink-0 text-brand-fg" />
                           {folder.name}
                         </button>
                       ))}

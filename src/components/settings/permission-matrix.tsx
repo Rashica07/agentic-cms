@@ -106,7 +106,7 @@ export function PermissionMatrix() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
             <CardTitle className="flex items-center gap-2 text-base font-semibold">
-              <ShieldCheck className="h-4 w-4 text-brand" /> Content permissions
+              <ShieldCheck className="h-4 w-4 text-brand-fg" /> Content permissions
             </CardTitle>
             <CardDescription>
               Override what each role can do, per content type. Admins always have full access.

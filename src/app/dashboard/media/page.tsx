@@ -151,8 +151,7 @@ export default function MediaPage() {
       
       <div className="flex items-center justify-between mb-8 shrink-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <ImageIcon className="h-7 w-7 text-brand" /> Media Library
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2"> Media Library
           </h1>
           <p className="text-sm text-neutral-400 mt-2">Manage your images, videos, and uploaded assets.</p>
         </div>
@@ -176,7 +175,7 @@ export default function MediaPage() {
                 />
                 <div className="flex justify-end gap-2">
                   <Button type="button" variant="ghost" onClick={() => setIsFolderOpen(false)}>Cancel</Button>
-                  <Button type="submit" className="bg-brand text-black hover:bg-brand-hover" disabled={isCreatingFolder}>
+                  <Button type="submit" className="bg-brand text-brand-foreground hover:bg-brand-hover" disabled={isCreatingFolder}>
                     {isCreatingFolder ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create'}
                   </Button>
                 </div>
@@ -186,14 +185,14 @@ export default function MediaPage() {
 
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-brand text-black hover:bg-brand-hover gap-2 rounded-full px-5 font-semibold shadow-sm">
+              <Button className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2 rounded-full px-5 font-semibold shadow-sm">
                 <Plus className="h-4 w-4" /> Upload
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-lg gap-0 p-0 overflow-hidden">
               <div className="bg-brand/10 border-b border-border/50 p-6 flex flex-col items-center justify-center text-center">
-                <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center mb-4">
-                  <UploadCloud className="h-6 w-6 text-brand" />
+                <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/40 flex items-center justify-center mb-4">
+                  <UploadCloud className="h-6 w-6 text-brand-fg" />
                 </div>
                 <DialogTitle className="text-xl font-bold text-white">Upload Asset</DialogTitle>
                 <DialogDescription className="mt-1">Select a file to upload to the library.</DialogDescription>
@@ -233,7 +232,7 @@ export default function MediaPage() {
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
                   <Button type="button" variant="ghost" className="rounded-full px-6 hover:bg-neutral-800 text-neutral-300" onClick={() => setIsAddOpen(false)}>Cancel</Button>
-                  <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-black hover:bg-brand-hover font-semibold">
+                  <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-brand-foreground hover:bg-brand-hover font-semibold">
                     {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
                     Upload
                   </Button>
@@ -249,8 +248,8 @@ export default function MediaPage() {
         <div className="mb-6 shrink-0 rounded-xl border border-border-strong bg-surface p-5">
           <div className="flex items-center justify-between mb-4 gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center shrink-0">
-                <Globe className="h-4 w-4 text-brand" />
+              <div className="h-8 w-8 rounded-lg bg-brand/10 border border-border-strong flex items-center justify-center shrink-0">
+                <Globe className="h-4 w-4 text-brand-fg" />
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-white">Site Files</h2>
@@ -328,7 +327,7 @@ export default function MediaPage() {
           <button 
             className={cn(
               "flex items-center gap-3 w-full p-2 rounded-lg text-sm font-medium transition-colors text-left",
-              selectedFolderId === null ? "bg-brand/10 text-brand" : "text-neutral-300 hover:bg-surface-2"
+              selectedFolderId === null ? "bg-brand/10 text-brand-fg" : "text-neutral-300 hover:bg-surface-2"
             )}
             onClick={() => setSelectedFolderId(null)}
           >
@@ -348,7 +347,7 @@ export default function MediaPage() {
                   key={folder.id}
                   className={cn(
                     "flex items-center gap-3 w-full p-2 rounded-lg text-sm font-medium transition-colors text-left",
-                    selectedFolderId === folder.id ? "bg-brand/10 text-brand" : "text-neutral-300 hover:bg-surface-2"
+                    selectedFolderId === folder.id ? "bg-brand/10 text-brand-fg" : "text-neutral-300 hover:bg-surface-2"
                   )}
                   onClick={() => setSelectedFolderId(folder.id)}
                 >
@@ -419,7 +418,7 @@ export default function MediaPage() {
                     </div>
                     
                     <div className="translate-y-[10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">
-                      <p className="text-sm font-medium text-white truncate drop-shadow-md">{photo.filename}</p>
+                      <p className="text-sm font-medium text-white truncate">{photo.filename}</p>
                       <p className="text-[10px] text-neutral-300 mt-1 font-mono uppercase tracking-widest">{formatDistanceToNow(new Date(photo.createdAt), { addSuffix: true })}</p>
                     </div>
                   </div>

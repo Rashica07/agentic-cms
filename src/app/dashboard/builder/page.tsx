@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 import { useSiteInfo } from '@/hooks/useSiteInfo';
+import { THEME_PREVIEW_HTML } from '@/demo/theme-preview';
 
 const DEFAULT_THEME = {
   colors: {
@@ -34,7 +35,7 @@ const THEME_LIBRARY = [
   {
     id: 'dawn',
     name: 'Dawn',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'A chic and minimalist theme that lets product images take center stage.',
     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1200&h=600',
     colors: { primary: '#000000', background: '#ffffff', surface: '#f4f4f4', accent: '#ff8c00' },
@@ -42,7 +43,7 @@ const THEME_LIBRARY = [
   {
     id: 'refresh',
     name: 'Refresh',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'Bold theme that elevates product quality and brand storytelling.',
     image: 'https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&q=80&w=1200&h=600',
     colors: { primary: '#ffffff', background: '#0f172a', surface: '#1e293b', accent: '#3b82f6' },
@@ -119,8 +120,7 @@ export default function ThemesPage() {
         
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-            <LayoutTemplate className="h-7 w-7 text-brand" /> Themes & Customization
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white flex items-center gap-2"> Themes & Customization
           </h1>
           <p className="text-neutral-400 mt-2">
             Manage your store's look and feel, customize themes, and tweak your brand settings.
@@ -134,7 +134,15 @@ export default function ThemesPage() {
             <div className="absolute inset-0 origin-top-left pointer-events-none" style={{ width: '250%', height: '250%', transform: 'scale(0.4)' }}>
               {/* siteUrl is null until the tenant's site is discovered or a
                   domain is set — an empty iframe beats loading a wrong host. */}
-              {siteUrl ? (
+              {process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' ? (
+                <iframe
+                  id="site-preview-iframe"
+                  srcDoc={THEME_PREVIEW_HTML}
+                  sandbox="allow-scripts"
+                  title="Live site preview"
+                  className="w-full h-full border-none transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : siteUrl ? (
                 <iframe
                   id="site-preview-iframe"
                   src={siteUrl}
@@ -155,11 +163,11 @@ export default function ThemesPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-8 left-8 flex items-center gap-4">
               <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
-                <Paintbrush className="h-8 w-8 text-white drop-shadow-md" />
+                <Paintbrush className="h-8 w-8 text-white" />
               </div>
               <div>
-                <span className="text-sm font-bold uppercase tracking-widest text-brand drop-shadow-sm">Current Theme</span>
-                <h2 className="text-4xl font-extrabold text-white drop-shadow-lg tracking-tight mt-1">{activeTheme.name}</h2>
+                <span className="text-sm font-bold uppercase tracking-widest text-brand-fg">Current Theme</span>
+                <h2 className="text-4xl font-extrabold text-white tracking-tight mt-1">{activeTheme.name}</h2>
               </div>
             </div>
             {/* Live Indicator */}
@@ -189,7 +197,7 @@ export default function ThemesPage() {
               </div>
             </div>
             <Link href="/dashboard/builder/editor">
-              <Button className="h-12 px-8 rounded-xl bg-brand text-black hover:bg-brand/90 font-bold shadow-[0_0_20px_rgba(255,140,0,0.3)] transition-all hover:scale-105 gap-2 text-md">
+              <Button className="h-12 px-8 rounded-xl bg-brand text-brand-foreground hover:bg-brand/90 font-bold transition-all hover:scale-105 gap-2 text-md">
                 <Settings2 className="h-5 w-5" /> Customize
               </Button>
             </Link>
@@ -203,7 +211,7 @@ export default function ThemesPage() {
           <div className="lg:col-span-1 space-y-6">
             <div id="theme-settings-panel" className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 sticky top-6 scroll-mt-6">
               <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <Paintbrush className="h-5 w-5 text-brand" /> Theme Settings
+                <Paintbrush className="h-5 w-5 text-brand-fg" /> Theme Settings
               </h3>
               
               <div className="space-y-6">
@@ -247,7 +255,7 @@ export default function ThemesPage() {
                   <Button 
                     onClick={handleSave} 
                     disabled={saving}
-                    className="w-full bg-white text-black hover:bg-neutral-200 font-bold"
+                    className="w-full bg-ivory text-[#1a1a1d] hover:bg-neutral-100 font-bold"
                   >
                     {saving ? 'Saving...' : 'Save Theme Settings'}
                   </Button>
@@ -273,7 +281,7 @@ export default function ThemesPage() {
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                       <Button 
                         variant="outline"
-                        className="bg-white text-black font-semibold hover:bg-brand hover:text-white hover:border-brand transition-colors"
+                        className="bg-white text-brand-foreground font-semibold hover:bg-brand hover:text-white hover:border-brand transition-colors"
                         onClick={() => applyLibraryTheme(libTheme)}
                       >
                         Apply Theme

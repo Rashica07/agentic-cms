@@ -128,7 +128,7 @@ export function GlobalSearch({ open, onOpenChange }: { open: boolean; onOpenChan
         {/* Input */}
         <div className="flex items-center gap-3 border-b border-border px-4">
           {isFetching ? (
-            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand" />
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand-fg" />
           ) : (
             <Search className="h-4 w-4 shrink-0 text-neutral-500" />
           )}
@@ -175,7 +175,7 @@ export function GlobalSearch({ open, onOpenChange }: { open: boolean; onOpenChan
                         active ? 'bg-brand/10' : 'hover:bg-surface-2',
                       )}
                     >
-                      <FileText className={cn('mt-0.5 h-4 w-4 shrink-0', active ? 'text-brand' : 'text-neutral-500')} />
+                      <FileText className={cn('mt-0.5 h-4 w-4 shrink-0', active ? 'text-brand-fg' : 'text-neutral-500')} />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="truncate text-sm font-medium text-foreground">{hit.slug}</span>
@@ -188,7 +188,7 @@ export function GlobalSearch({ open, onOpenChange }: { open: boolean; onOpenChan
                         </div>
                         <p className="mt-0.5 truncate text-xs text-neutral-500">{hit.snippet}</p>
                       </div>
-                      {active && <CornerDownLeft className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />}
+                      {active && <CornerDownLeft className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-fg" />}
                     </button>
                   );
                 })}

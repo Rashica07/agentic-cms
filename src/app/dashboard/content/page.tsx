@@ -42,7 +42,7 @@ export default function ContentLibraryPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">Content Library</h1>
+          <h1 className="text-[19px] font-semibold text-foreground tracking-[-0.01em]">Content Library</h1>
           <p className="text-neutral-400 mt-1">Manage all your dynamic content entries.</p>
         </div>
       </div>
@@ -55,13 +55,13 @@ export default function ContentLibraryPage() {
             className="group p-5 rounded-xl border border-border bg-surface-2/30 hover:bg-surface hover:border-brand/50 transition-all"
           >
             <div className="flex items-start justify-between">
-              <div className="h-10 w-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center">
+              <div className="h-10 w-10 rounded-lg bg-brand/10 text-brand-fg flex items-center justify-center">
                 <Layers className="h-5 w-5" />
               </div>
               <ArrowRight className="h-4 w-4 text-neutral-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
             </div>
             <div className="mt-4">
-              <h3 className="text-lg font-semibold text-foreground group-hover:text-brand transition-colors">{type.name}</h3>
+              <h3 className="text-lg font-semibold text-foreground group-hover:text-brand-fg transition-colors">{type.name}</h3>
               <p className="text-sm text-neutral-400 mt-1 line-clamp-2">
                 {type.description || `Manage entries for ${type.name.toLowerCase()}`}
               </p>

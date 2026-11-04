@@ -88,8 +88,7 @@ export default function RedirectsPage() {
           <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
         </Link>
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
-            <ArrowRightLeft className="h-6 w-6 text-brand" /> Redirects
+          <h1 className="flex items-center gap-2 text-[19px] font-semibold tracking-[-0.01em] text-foreground"> Redirects
           </h1>
           <p className="mt-1 text-sm text-neutral-400">
             Send old URLs to new ones so links and search rankings survive a restructure.
@@ -144,7 +143,7 @@ export default function RedirectsPage() {
                         <div className="flex items-center gap-2 font-mono text-xs">
                           <span className="text-neutral-300">{r.fromPath}</span>
                           <ArrowRight className="h-3 w-3 shrink-0 text-neutral-600" />
-                          <span className="text-brand">{r.toPath}</span>
+                          <span className="text-brand-fg">{r.toPath}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">

@@ -117,7 +117,7 @@ export default function SiteConnectionPage() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="border-b border-border/50 pb-4">
           <CardTitle className="flex items-center gap-2 text-base font-semibold">
-            <RadioTower className="h-4 w-4 text-brand" /> Site Connection
+            <RadioTower className="h-4 w-4 text-brand-fg" /> Site Connection
           </CardTitle>
           <CardDescription>
             Where your site lives, and whether the CMS can push changes to it live.
@@ -148,7 +148,7 @@ export default function SiteConnectionPage() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <a href={info!.siteUrl!} target="_blank" rel="noopener noreferrer" className="truncate font-mono text-sm text-foreground hover:text-brand">
+                  <a href={info!.siteUrl!} target="_blank" rel="noopener noreferrer" className="truncate font-mono text-sm text-foreground hover:text-brand-fg">
                     {info!.siteUrl}
                   </a>
                   <ExternalLink className="h-3 w-3 shrink-0 text-neutral-600" />

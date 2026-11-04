@@ -83,8 +83,7 @@ export default function ReservationsPage() {
     <div className="max-w-6xl space-y-6 pb-10 anim-fade-in">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
-            <CalendarCheck className="h-6 w-6 text-brand" /> Reservations
+          <h1 className="flex items-center gap-2 text-[19px] font-semibold tracking-[-0.01em] text-foreground"> Reservations
           </h1>
           <p className="mt-1 text-sm text-neutral-400">Bookings, tables, and opening hours.</p>
         </div>
@@ -98,7 +97,7 @@ export default function ReservationsPage() {
           <button
             key={id}
             onClick={() => setTab(id)}
-            className={cn('relative px-4 py-2 text-sm font-medium transition-colors', tab === id ? 'text-brand' : 'text-neutral-400 hover:text-neutral-200')}
+            className={cn('relative px-4 py-2 text-sm font-medium transition-colors', tab === id ? 'text-brand-fg' : 'text-neutral-400 hover:text-neutral-200')}
           >
             {label}
             {tab === id && <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-brand" />}
@@ -236,7 +235,7 @@ function SetupTab() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="border-b border-border/50 pb-4">
           <CardTitle className="flex items-center gap-2 text-base font-semibold">
-            <Armchair className="h-4 w-4 text-brand" /> Tables
+            <Armchair className="h-4 w-4 text-brand-fg" /> Tables
           </CardTitle>
           <CardDescription>What can be booked, and how many it seats.</CardDescription>
         </CardHeader>
@@ -281,7 +280,7 @@ function SetupTab() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="border-b border-border/50 pb-4">
           <CardTitle className="flex items-center gap-2 text-base font-semibold">
-            <Clock className="h-4 w-4 text-brand" /> Opening hours
+            <Clock className="h-4 w-4 text-brand-fg" /> Opening hours
           </CardTitle>
           <CardDescription>Add several per day for split shifts (lunch and dinner).</CardDescription>
         </CardHeader>

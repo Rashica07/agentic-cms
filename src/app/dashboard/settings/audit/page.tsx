@@ -35,7 +35,7 @@ export default function AuditSettingsPage() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="pb-4 border-b border-border/50">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <ScrollText className="h-5 w-5 text-brand" />
+            <ScrollText className="h-5 w-5 text-brand-fg" />
             Activity & Audit Log
           </CardTitle>
           <CardDescription className="text-neutral-400 mt-1">Review actions taken across your workspace.</CardDescription>

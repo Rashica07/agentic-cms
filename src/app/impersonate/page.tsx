@@ -44,7 +44,7 @@ function ImpersonateLogic() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-white">
-      <Loader2 className="h-8 w-8 animate-spin text-brand mb-4" />
+      <Loader2 className="h-8 w-8 animate-spin text-brand-fg mb-4" />
       <h2 className="text-xl font-semibold">Logging into Tenant Workspace...</h2>
       <p className="text-neutral-400 mt-2">Please wait while we authenticate your super admin session.</p>
     </div>
@@ -53,7 +53,7 @@ function ImpersonateLogic() {
 
 export default function ImpersonatePage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-brand" /></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-brand-fg" /></div>}>
       <ImpersonateLogic />
     </Suspense>
   );

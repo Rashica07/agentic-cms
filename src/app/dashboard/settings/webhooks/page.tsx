@@ -94,7 +94,7 @@ export default function WebhooksSettingsPage() {
         <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-4">
           <div className="space-y-1">
             <CardTitle className="flex items-center gap-2 text-base font-semibold">
-              <WebhookIcon className="h-4 w-4 text-brand" /> Webhooks
+              <WebhookIcon className="h-4 w-4 text-brand-fg" /> Webhooks
             </CardTitle>
             <CardDescription>
               POST a signed payload to your systems whenever content changes.

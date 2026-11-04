@@ -33,8 +33,8 @@ export function StepIndicator({ current }: { current: number }) {
               <div
                 className={cn(
                   'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors',
-                  isComplete && 'border-brand bg-brand text-black',
-                  isActive && !isComplete && 'border-brand text-brand',
+                  isComplete && 'border-brand bg-brand text-brand-foreground',
+                  isActive && !isComplete && 'border-brand text-brand-fg',
                   !isActive && !isComplete && 'border-border text-neutral-500'
                 )}
               >
@@ -87,9 +87,9 @@ export function WelcomeStep({
   return (
     <div className="space-y-5">
       <div className="space-y-1.5">
-        <h2 className="text-lg font-semibold text-white">Welcome to Novus Pulse</h2>
+        <h2 className="text-lg font-semibold text-white">Welcome to OMNI</h2>
         <p className="text-sm text-neutral-400">
-          This wizard sets up your Novus Pulse installation: it verifies your environment, creates
+          This wizard sets up your OMNI installation: it verifies your environment, creates
           your administrator account, and configures your first website. It only takes a few
           minutes.
         </p>
@@ -137,11 +137,11 @@ export function WelcomeStep({
   );
 }
 
-const LICENSE_TEXT = `Novus Pulse is provided for use in configuring and operating your own
+const LICENSE_TEXT = `OMNI is provided for use in configuring and operating your own
 instance of the platform. By continuing, you agree to use this software in
 accordance with your organization's license agreement, to keep administrator
 credentials confidential, and to comply with applicable data protection laws
-for any content you manage through this installation. Novus Pulse is provided
+for any content you manage through this installation. OMNI is provided
 without warranty of any kind, express or implied.`;
 
 export function LicenseStep({
@@ -190,7 +190,7 @@ export function DatabaseStep({
       <div className="space-y-1.5">
         <h2 className="text-lg font-semibold text-white">Database</h2>
         <p className="text-sm text-neutral-400">
-          Novus Pulse needs a reachable database before it can install. Verify the connection below.
+          OMNI needs a reachable database before it can install. Verify the connection below.
         </p>
       </div>
 
@@ -238,7 +238,7 @@ export function AdminStep({
     <div className="space-y-4">
       <div className="space-y-1.5">
         <h2 className="text-lg font-semibold text-white">Administrator Account</h2>
-        <p className="text-sm text-neutral-400">This account will have full access to manage Novus Pulse.</p>
+        <p className="text-sm text-neutral-400">This account will have full access to manage OMNI.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -332,7 +332,7 @@ export function WebsiteStep({
     <div className="space-y-4">
       <div className="space-y-1.5">
         <h2 className="text-lg font-semibold text-white">Your Website</h2>
-        <p className="text-sm text-neutral-400">Set up the first tenant workspace Novus Pulse will manage.</p>
+        <p className="text-sm text-neutral-400">Set up the first tenant workspace OMNI will manage.</p>
       </div>
 
       <div className="space-y-2">
@@ -408,7 +408,7 @@ export function InstallStep({
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <h2 className="text-lg font-semibold text-white">Installing Novus Pulse</h2>
+        <h2 className="text-lg font-semibold text-white">Installing OMNI</h2>
         <p className="text-sm text-neutral-400">
           {phase === 'success'
             ? 'Installation complete.'

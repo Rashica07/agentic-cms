@@ -35,7 +35,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         aria-label="Light mode"
         className={cn(
           'relative z-10 flex h-6 w-6 items-center justify-center rounded-full transition-colors',
-          theme === 'light' ? 'text-brand' : 'text-neutral-400 hover:text-neutral-500',
+          theme === 'light' ? 'text-brand-fg' : 'text-neutral-400 hover:text-neutral-500',
         )}
       >
         <Sun className="h-3.5 w-3.5" />
@@ -47,7 +47,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         aria-label="Dark mode"
         className={cn(
           'relative z-10 flex h-6 w-6 items-center justify-center rounded-full transition-colors',
-          theme === 'dark' ? 'text-brand' : 'text-neutral-400 hover:text-neutral-300',
+          theme === 'dark' ? 'text-brand-fg' : 'text-neutral-400 hover:text-neutral-300',
         )}
       >
         <Moon className="h-3.5 w-3.5" />

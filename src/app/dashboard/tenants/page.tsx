@@ -33,7 +33,7 @@ export default async function TenantsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">Tenants</h1>
+          <h1 className="text-[19px] font-semibold text-foreground tracking-[-0.01em]">Tenants</h1>
           <p className="text-neutral-400 mt-1">Manage all platform tenants and subscriptions.</p>
         </div>
       </div>

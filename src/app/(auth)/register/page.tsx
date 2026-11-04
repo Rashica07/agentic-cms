@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { DemoEnter } from '@/components/demo-enter';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 
 const registerSchema = z.object({
@@ -28,7 +29,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
@@ -87,7 +88,7 @@ export default function RegisterPage() {
           <p className="text-xs">Didn&apos;t get it? Check spam, or the link may take a minute to arrive.</p>
         </CardContent>
         <CardFooter className="border-t border-border pt-4">
-          <Link href="/login" className="text-sm text-brand hover:underline">
+          <Link href="/login" className="text-sm text-brand-fg hover:underline">
             Back to log in
           </Link>
         </CardFooter>
@@ -142,11 +143,17 @@ export default function RegisterPage() {
       <CardFooter className="flex justify-center border-t border-border pt-4">
         <p className="text-sm text-neutral-400">
           Already have an account?{' '}
-          <Link href="/login" className="text-brand hover:underline">
+          <Link href="/login" className="text-brand-fg hover:underline">
             Log In
           </Link>
         </p>
       </CardFooter>
     </Card>
   );
+}
+
+/** Demo mode has no backend to register against — go straight into the demo workspace. */
+export default function RegisterPage() {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE !== 'false') return <DemoEnter />;
+  return <RegisterForm />;
 }

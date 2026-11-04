@@ -27,8 +27,7 @@ export default function EmailPage() {
     <div className="max-w-6xl space-y-6 pb-10 anim-fade-in">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
-            <Mail className="h-6 w-6 text-brand" /> Email campaigns
+          <h1 className="flex items-center gap-2 text-[19px] font-semibold tracking-[-0.01em] text-foreground"> Email campaigns
           </h1>
           <p className="mt-1 text-sm text-neutral-400">Newsletters and announcements to your CRM contacts.</p>
         </div>

@@ -164,7 +164,7 @@ export function TenantRowActions({ tenantId, status, slug, name }: { tenantId: s
                 <Button
                   type="submit"
                   disabled={loading !== null}
-                  className="bg-brand text-black hover:bg-brand/90 font-semibold"
+                  className="bg-brand text-brand-foreground hover:bg-brand/90 font-semibold"
                 >
                   {loading === 'approve' ? 'Approving...' : (paidInCash ? 'Approve Cash Payment' : 'Confirm Approval')}
                 </Button>

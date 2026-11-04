@@ -90,7 +90,7 @@ export default function InstallPage() {
       setInstallPhase(steps.length > 0 ? 'revealing' : result.success ? 'success' : 'failed');
     } catch (err) {
       if (err instanceof InstallApiError && err.status === 403) {
-        toast.error('Novus Pulse is already installed.');
+        toast.error('OMNI is already installed.');
         router.replace('/login');
         return;
       }
@@ -171,7 +171,7 @@ export default function InstallPage() {
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="w-full max-w-lg space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-brand">Novus Pulse</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-brand-fg">OMNI</h1>
           <p className="mt-2 text-sm text-neutral-400">Install Wizard</p>
         </div>
 

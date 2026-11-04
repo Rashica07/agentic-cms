@@ -184,7 +184,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-foreground tracking-tight">
+                <h1 className="text-[19px] font-semibold text-foreground tracking-[-0.01em]">
                   {isNew ? `Create ${type.name}` : `Edit ${type.name}`}
                 </h1>
                 {!isNew && (
@@ -219,10 +219,10 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                 return (
                   <div key={field.apiId} className="space-y-2 group">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor={field.apiId} className="text-sm font-medium text-neutral-200">
+                      <Label htmlFor={`field-${field.apiId}`} className="text-sm font-medium text-neutral-200">
                         {field.label} {field.required && <span className="text-red-500">*</span>}
                       </Label>
-                      <Button type="button" variant="ghost" size="sm" className="h-6 text-[10px] gap-1 opacity-0 group-hover:opacity-100 text-brand">
+                      <Button type="button" variant="ghost" size="sm" className="h-6 text-[10px] gap-1 opacity-0 group-hover:opacity-100 text-brand-fg">
                         <Sparkles className="h-3 w-3" /> Auto-fill
                       </Button>
                     </div>
@@ -230,15 +230,15 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                     {field.type === 'boolean' ? (
                       <div className="flex items-center space-x-2 pt-1">
                         <Checkbox 
-                          id={field.apiId} 
+                          id={`field-${field.apiId}`} 
                           checked={formData[field.apiId] || false}
                           onCheckedChange={c => handleFieldChange(field.apiId, c)}
                         />
-                        <Label htmlFor={field.apiId} className="text-sm text-neutral-400">Yes</Label>
+                        <Label htmlFor={`field-${field.apiId}`} className="text-sm text-neutral-400">Yes</Label>
                       </div>
                     ) : field.type === 'number' ? (
                       <Input 
-                        id={field.apiId} 
+                        id={`field-${field.apiId}`} 
                         type="number"
                         required={field.required}
                         value={formData[field.apiId] || ''}
@@ -247,7 +247,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                       />
                     ) : field.type === 'richtext' ? (
                       <textarea 
-                        id={field.apiId} 
+                        id={`field-${field.apiId}`} 
                         required={field.required}
                         value={formData[field.apiId] || ''}
                         onChange={e => handleFieldChange(field.apiId, e.target.value)}
@@ -255,7 +255,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                       />
                     ) : field.type === 'json' ? (
                       <textarea
-                        id={field.apiId}
+                        id={`field-${field.apiId}`}
                         required={field.required}
                         value={typeof formData[field.apiId] === 'object' ? JSON.stringify(formData[field.apiId], null, 2) : (formData[field.apiId] || '')}
                         onChange={e => handleFieldChange(field.apiId, e.target.value)}
@@ -277,7 +277,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                       />
                     ) : field.type === 'select' ? (
                       <select
-                        id={field.apiId}
+                        id={`field-${field.apiId}`}
                         required={field.required}
                         value={formData[field.apiId] || ''}
                         onChange={e => handleFieldChange(field.apiId, e.target.value)}
@@ -293,7 +293,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                       </select>
                     ) : field.type === 'date' || field.type === 'datetime' ? (
                       <Input
-                        id={field.apiId}
+                        id={`field-${field.apiId}`}
                         type={field.type === 'date' ? 'date' : 'datetime-local'}
                         required={field.required}
                         // Stored as ISO; both inputs need a trimmed local-ish value.
@@ -303,7 +303,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                       />
                     ) : field.type === 'slug' ? (
                       <Input
-                        id={field.apiId}
+                        id={`field-${field.apiId}`}
                         required={field.required}
                         value={formData[field.apiId] || ''}
                         onChange={e => handleFieldChange(field.apiId, e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'))}
@@ -311,7 +311,7 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
                       />
                     ) : (
                       <Input 
-                        id={field.apiId} 
+                        id={`field-${field.apiId}`} 
                         type="text"
                         required={field.required}
                         value={formData[field.apiId] || ''}
@@ -383,9 +383,9 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
               </div>
 
               <div className="space-y-2 pt-2 border-t border-border/50">
-                <Label htmlFor="slug" className="text-sm font-medium text-neutral-200">Slug *</Label>
+                <Label htmlFor="entry-slug" className="text-sm font-medium text-neutral-200">Slug *</Label>
                 <Input
-                  id="slug"
+                  id="entry-slug"
                   required
                   value={slug}
                   onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'))}
@@ -402,10 +402,10 @@ export default function EntryEditorPage({ params }: { params: Promise<{ typeApiI
       </form>
 
       {/* RIGHT: AI Copilot Panel */}
-      <div className="w-80 shrink-0 flex flex-col rounded-xl border border-brand/30 bg-brand/5 overflow-hidden shadow-lg shadow-brand/5">
-        <div className="p-3 border-b border-brand/20 bg-brand/10 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-brand" />
-          <h2 className="font-semibold text-sm text-brand">AI Copilot</h2>
+      <div className="w-80 shrink-0 flex flex-col rounded-xl border border-brand/40 bg-surface-2/50 overflow-hidden">
+        <div className="p-3 border-b border-border-strong bg-brand/10 flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-brand-fg" />
+          <h2 className="font-semibold text-sm text-brand-fg">AI Copilot</h2>
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar text-sm">
